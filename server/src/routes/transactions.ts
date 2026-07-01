@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { getDefaultAccount } from '../lib/account';
+import { buildBudgetPayload, isBudgetWithinPeriod } from '../lib/budget';
 import { requireAuth } from '../middleware/auth';
 import { createTransactionSchema, listTransactionsQuerySchema } from '../schemas/transaction';
 
@@ -35,7 +36,28 @@ router.post('/', requireAuth, async (req, res) => {
         },
       });
 
-      return { transaction, currentBalance: updatedAccount.currentBalance };
+      let budget = null;
+      if (type === 'EXPENSE') {
+        const activeBudget = await tx.budget.findFirst({
+          where: { accountId: account.id, active: true },
+        });
+
+        if (activeBudget && isBudgetWithinPeriod(activeBudget)) {
+          budget = await tx.budget.update({
+            where: { id: activeBudget.id },
+            data: {
+              remainingAmount: { decrement: amount },
+              spentAmount: { increment: amount },
+            },
+          });
+        }
+      }
+
+      return {
+        transaction,
+        currentBalance: updatedAccount.currentBalance,
+        budget: budget ? buildBudgetPayload(budget) : null,
+      };
     });
 
     return res.status(201).json(result);

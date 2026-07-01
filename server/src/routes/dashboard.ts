@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { getDefaultAccount } from '../lib/account';
+import { isBudgetNearLimit } from '../lib/budget';
 import { requireAuth } from '../middleware/auth';
 
 const router = Router();
@@ -41,9 +42,7 @@ router.get('/', requireAuth, async (req, res) => {
         startAmount: activeBudget.startAmount,
         remainingAmount: activeBudget.remainingAmount,
         spentAmount: activeBudget.spentAmount,
-        isNearLimit: activeBudget.remainingAmount.lte(
-          activeBudget.startAmount.times(new Prisma.Decimal(1).minus(activeBudget.alertThreshold)),
-        ),
+        isNearLimit: isBudgetNearLimit(activeBudget),
       }
     : null;
 
