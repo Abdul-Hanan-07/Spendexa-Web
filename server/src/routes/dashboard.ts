@@ -1,15 +1,13 @@
 import { Router } from 'express';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
+import { getDefaultAccount } from '../lib/account';
 import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
 router.get('/', requireAuth, async (req, res) => {
-  const account = await prisma.account.findFirst({
-    where: { userId: req.userId },
-    orderBy: { createdAt: 'asc' },
-  });
+  const account = await getDefaultAccount(req.userId!);
 
   if (!account) {
     return res.status(404).json({ error: 'No account found' });

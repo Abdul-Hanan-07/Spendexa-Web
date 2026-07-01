@@ -1,0 +1,135 @@
+import { Router } from 'express';
+import type { Prisma } from '@prisma/client';
+import { prisma } from '../lib/prisma';
+import { getDefaultAccount } from '../lib/account';
+import { requireAuth } from '../middleware/auth';
+import { createTransactionSchema, listTransactionsQuerySchema } from '../schemas/transaction';
+
+const router = Router();
+
+router.post('/', requireAuth, async (req, res) => {
+  const parsed = createTransactionSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' });
+  }
+
+  const { amount, type, category, date } = parsed.data;
+
+  const account = await getDefaultAccount(req.userId!);
+  if (!account) {
+    return res.status(404).json({ error: 'No account found' });
+  }
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const transaction = await tx.transaction.create({
+        data: { accountId: account.id, amount, type, category, date },
+      });
+
+      const updatedAccount = await tx.account.update({
+        where: { id: account.id },
+        data: {
+          currentBalance: {
+            [type === 'INCOME' ? 'increment' : 'decrement']: amount,
+          },
+        },
+      });
+
+      return { transaction, currentBalance: updatedAccount.currentBalance };
+    });
+
+    return res.status(201).json(result);
+  } catch (err) {
+    console.error('Create transaction error:', err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+router.get('/', requireAuth, async (req, res) => {
+  const parsed = listTransactionsQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid query' });
+  }
+
+  const { type, category, startDate, endDate, limit, offset } = parsed.data;
+
+  const account = await getDefaultAccount(req.userId!);
+  if (!account) {
+    return res.status(404).json({ error: 'No account found' });
+  }
+
+  const where: Prisma.TransactionWhereInput = {
+    accountId: account.id,
+    ...(type ? { type } : {}),
+    ...(category ? { category } : {}),
+    ...(startDate || endDate
+      ? {
+          date: {
+            ...(startDate ? { gte: startDate } : {}),
+            ...(endDate ? { lte: endDate } : {}),
+          },
+        }
+      : {}),
+  };
+
+  const transactions = await prisma.transaction.findMany({
+    where,
+    orderBy: { date: 'desc' },
+    take: limit,
+    skip: offset,
+  });
+
+  return res.json({ transactions });
+});
+
+router.get('/:id', requireAuth, async (req, res) => {
+  const id = req.params.id as string;
+  const transaction = await prisma.transaction.findFirst({
+    where: { id, account: { userId: req.userId } },
+  });
+
+  if (!transaction) {
+    return res.status(404).json({ error: 'Transaction not found' });
+  }
+
+  return res.json({ transaction });
+});
+
+router.delete('/:id', requireAuth, async (req, res) => {
+  const id = req.params.id as string;
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const transaction = await tx.transaction.findFirst({
+        where: { id, account: { userId: req.userId } },
+      });
+
+      if (!transaction) {
+        return null;
+      }
+
+      await tx.transaction.delete({ where: { id: transaction.id } });
+
+      const updatedAccount = await tx.account.update({
+        where: { id: transaction.accountId },
+        data: {
+          currentBalance: {
+            [transaction.type === 'INCOME' ? 'decrement' : 'increment']: transaction.amount,
+          },
+        },
+      });
+
+      return { transaction, currentBalance: updatedAccount.currentBalance };
+    });
+
+    if (!result) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    return res.json({ success: true, currentBalance: result.currentBalance });
+  } catch (err) {
+    console.error('Delete transaction error:', err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+export default router;

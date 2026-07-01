@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth';
 import dashboardRouter from './routes/dashboard';
+import transactionsRouter from './routes/transactions';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -19,6 +20,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/auth', authRouter);
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/transactions', transactionsRouter);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
