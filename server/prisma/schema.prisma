@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  currency     String   @default("PKR")
+  dob          DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  accounts     Account[]
+
+  @@map("users")
+}
+
+model Account {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  currentBalance  Decimal  @default(0) @db.Decimal(14, 2)
+  totalAssets     Decimal  @default(0) @db.Decimal(14, 2)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  transactions  Transaction[]
+  investments   Investment[]
+  loans         Loan[]
+  budgets       Budget[]
+  goals         Goal[]
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  accountId String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  amount    Decimal  @db.Decimal(14, 2)
+  type      TransactionType
+  category  String
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  @@index([accountId])
+  @@index([accountId, date])
+  @@map("transactions")
+}
+
+enum InvestmentType {
+  PSX
+  CRYPTO
+  REAL_ESTATE
+  METAL
+}
+
+model Investment {
+  id           String   @id @default(uuid())
+  accountId    String
+  account      Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  type         InvestmentType
+  assetName    String
+  amount       Decimal  @db.Decimal(14, 2)
+  units        Decimal  @default(0) @db.Decimal(14, 4)
+  currentValue Decimal  @default(0) @db.Decimal(14, 2)
+  purchaseDate DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([accountId])
+  @@map("investments")
+}
+
+model Loan {
+  id               String   @id @default(uuid())
+  accountId        String
+  account          Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  principal        Decimal  @db.Decimal(14, 2)
+  interestRate     Decimal  @db.Decimal(5, 2)
+  remainingAmount  Decimal  @db.Decimal(14, 2)
+  startDate        DateTime
+  endDate          DateTime
+  status           String   @default("ACTIVE")
+  createdAt        DateTime @default(now())
+
+  repayments       LoanRepayment[]
+
+  @@index([accountId])
+  @@map("loans")
+}
+
+model LoanRepayment {
+  id        String   @id @default(uuid())
+  loanId    String
+  loan      Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  amount    Decimal  @db.Decimal(14, 2)
+  date      DateTime @default(now())
+
+  @@index([loanId])
+  @@map("loan_repayments")
+}
+
+model Budget {
+  id               String   @id @default(uuid())
+  accountId        String
+  account          Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name             String   @default("General")
+  startAmount      Decimal  @db.Decimal(14, 2)
+  remainingAmount  Decimal  @db.Decimal(14, 2)
+  spentAmount      Decimal  @default(0) @db.Decimal(14, 2)
+  startDate        DateTime
+  endDate          DateTime
+  alertThreshold   Decimal  @default(0.8) @db.Decimal(3, 2)
+  active           Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  @@index([accountId])
+  @@map("budgets")
+}
+
+model Goal {
+  id             String   @id @default(uuid())
+  accountId      String
+  account        Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name           String
+  targetAmount   Decimal  @db.Decimal(14, 2)
+  currentAmount  Decimal  @default(0) @db.Decimal(14, 2)
+  deadline       DateTime
+  createdAt      DateTime @default(now())
+
+  @@index([accountId])
+  @@map("goals")
+}
