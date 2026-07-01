@@ -6,6 +6,7 @@ import authRouter from './routes/auth';
 import dashboardRouter from './routes/dashboard';
 import transactionsRouter from './routes/transactions';
 import investmentsRouter from './routes/investments';
+import loansRouter from './routes/loans';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -23,6 +24,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/transactions', transactionsRouter);
 app.use('/api/investments', investmentsRouter);
+app.use('/api/loans', loansRouter);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
