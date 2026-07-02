@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { Target, Wallet } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
@@ -8,7 +7,8 @@ import { DashboardPage } from './pages/DashboardPage';
 import { TransactionsPage } from './pages/TransactionsPage';
 import { InvestmentsPage } from './pages/InvestmentsPage';
 import { LoansPage } from './pages/LoansPage';
-import { PlaceholderPage } from './pages/PlaceholderPage';
+import { BudgetsPage } from './pages/BudgetsPage';
+import { GoalsPage } from './pages/GoalsPage';
 
 function CatchAll() {
   const { user, loading } = useAuth();
@@ -30,8 +30,8 @@ function AppRoutes() {
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/investments" element={<InvestmentsPage />} />
         <Route path="/loans" element={<LoansPage />} />
-        <Route path="/budgets" element={<PlaceholderPage title="Budgets" icon={Wallet} />} />
-        <Route path="/goals" element={<PlaceholderPage title="Goals" icon={Target} />} />
+        <Route path="/budgets" element={<BudgetsPage />} />
+        <Route path="/goals" element={<GoalsPage />} />
       </Route>
       <Route path="*" element={<CatchAll />} />
     </Routes>

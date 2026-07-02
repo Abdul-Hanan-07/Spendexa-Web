@@ -84,6 +84,22 @@ export interface Goal {
   progress: number;
 }
 
+export interface Budget {
+  id: string;
+  accountId?: string;
+  name: string;
+  startAmount: string;
+  remainingAmount: string;
+  spentAmount: string;
+  isNearLimit: boolean;
+  isWithinPeriod?: boolean;
+  startDate?: string;
+  endDate?: string;
+  active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface ActiveBudgetSummary {
   id: string;
   name: string;
@@ -143,6 +159,27 @@ export interface CreateLoanInput {
 
 export interface RepayLoanInput {
   amount: number;
+}
+
+export interface UpsertBudgetInput {
+  name: string;
+  startAmount: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface CreateGoalInput {
+  name: string;
+  targetAmount: number;
+  currentAmount?: number;
+  deadline: string;
+}
+
+export interface UpdateGoalInput {
+  name?: string;
+  targetAmount?: number;
+  currentAmount?: number;
+  deadline?: string;
 }
 
 class ApiError extends Error {}
@@ -232,4 +269,20 @@ export const api = {
   deleteLoan: (id: string) => request<{ success: boolean }>(`/api/loans/${id}`, { method: 'DELETE' }),
 
   listGoals: () => request<{ goals: Goal[] }>('/api/goals'),
+  getGoal: (id: string) => request<{ goal: Goal }>(`/api/goals/${id}`),
+  createGoal: (input: CreateGoalInput) =>
+    request<{ goal: Goal }>('/api/goals', { method: 'POST', body: JSON.stringify(input) }),
+  updateGoal: (id: string, input: UpdateGoalInput) =>
+    request<{ goal: Goal }>(`/api/goals/${id}`, { method: 'PATCH', body: JSON.stringify(input) }),
+  deleteGoal: (id: string) => request<{ success: boolean }>(`/api/goals/${id}`, { method: 'DELETE' }),
+
+  getActiveBudget: () => request<{ budget: Budget | null }>('/api/budgets'),
+  getBudgetHistory: () => request<{ budgets: Budget[] }>('/api/budgets/history'),
+  upsertBudget: (input: UpsertBudgetInput) =>
+    request<{ budget: Budget; action: 'created' | 'updated' }>('/api/budgets', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
+  deactivateBudget: (id: string) =>
+    request<{ budget: Budget }>(`/api/budgets/${id}/deactivate`, { method: 'PATCH' }),
 };
