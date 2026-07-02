@@ -5,7 +5,7 @@ import { buildExpenseBreakdown } from '../../lib/chartData';
 import { formatCurrency } from '../../lib/format';
 import { EmptyState } from './EmptyState';
 
-const COLORS = ['#F59E0B', '#2DD4BF', '#818CF8', '#FB7185', '#38BDF8', '#A78BFA', '#34D399', '#94A3B8'];
+const COLORS = ['#F59E0B', '#14B8A6', '#6366F1', '#F43F5E', '#A855F7', '#84CC16'];
 
 export function ExpenseBreakdownChart({
   transactions,

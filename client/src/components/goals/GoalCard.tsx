@@ -64,8 +64,11 @@ export function GoalCard({
         </div>
         <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-amber-500 transition-all"
-            style={{ width: `${Math.min(goal.progress * 100, 100)}%` }}
+            className="h-full transition-all"
+            style={{
+              width: `${Math.min(goal.progress * 100, 100)}%`,
+              background: 'linear-gradient(to right, #14B8A6, #22C55E)',
+            }}
           />
         </div>
       </div>

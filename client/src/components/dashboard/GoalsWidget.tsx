@@ -35,8 +35,11 @@ export function GoalsWidget({ goals, currency }: { goals: Goal[]; currency: stri
               </div>
               <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-amber-500 transition-all"
-                  style={{ width: `${Math.min(goal.progress, 100)}%` }}
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${Math.min(goal.progress, 100)}%`,
+                    background: 'linear-gradient(to right, #14B8A6, #22C55E)',
+                  }}
                 />
               </div>
               <div className="flex items-center justify-between mt-1">
