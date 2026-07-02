@@ -110,6 +110,19 @@ export interface CreateTransactionInput {
   date: string;
 }
 
+export interface CreateInvestmentInput {
+  type: InvestmentType;
+  assetName: string;
+  amount: number;
+  units?: number;
+  currentValue?: number;
+  purchaseDate: string;
+}
+
+export interface UpdateInvestmentInput {
+  currentValue: number;
+}
+
 class ApiError extends Error {}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -169,6 +182,20 @@ export const api = {
 
   listInvestments: (params: { type?: InvestmentType } = {}) =>
     request<{ investments: Investment[] }>(`/api/investments${toQueryString(params)}`),
+  createInvestment: (input: CreateInvestmentInput) =>
+    request<{ investment: Investment; totalAssets: string }>('/api/investments', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
+  updateInvestment: (id: string, input: UpdateInvestmentInput) =>
+    request<{ investment: Investment; totalAssets: string }>(`/api/investments/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    }),
+  deleteInvestment: (id: string) =>
+    request<{ success: boolean; totalAssets: string }>(`/api/investments/${id}`, {
+      method: 'DELETE',
+    }),
 
   listLoans: (params: { status?: LoanStatus } = {}) =>
     request<{ loans: Loan[] }>(`/api/loans${toQueryString(params)}`),

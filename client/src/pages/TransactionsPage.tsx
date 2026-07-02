@@ -6,8 +6,8 @@ import { TransactionFilters, EMPTY_FILTERS } from '../components/transactions/Tr
 import type { TransactionFilterState } from '../components/transactions/TransactionFilters';
 import { TransactionTable } from '../components/transactions/TransactionTable';
 import { AddTransactionPanel } from '../components/transactions/AddTransactionPanel';
-import { ConfirmDialog } from '../components/transactions/ConfirmDialog';
-import { Toast } from '../components/transactions/Toast';
+import { ConfirmDialog } from '../components/common/ConfirmDialog';
+import { Toast } from '../components/common/Toast';
 import { useAuth } from '../context/AuthContext';
 import { useTransactions } from '../hooks/useTransactions';
 import { api } from '../lib/api';
