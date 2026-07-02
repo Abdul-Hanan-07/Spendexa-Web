@@ -62,6 +62,17 @@ export interface Loan {
   createdAt: string;
 }
 
+export interface LoanRepayment {
+  id: string;
+  loanId: string;
+  amount: string;
+  date: string;
+}
+
+export interface LoanWithRepayments extends Loan {
+  repayments: LoanRepayment[];
+}
+
 export interface Goal {
   id: string;
   accountId: string;
@@ -121,6 +132,17 @@ export interface CreateInvestmentInput {
 
 export interface UpdateInvestmentInput {
   currentValue: number;
+}
+
+export interface CreateLoanInput {
+  principal: number;
+  interestRate: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface RepayLoanInput {
+  amount: number;
 }
 
 class ApiError extends Error {}
@@ -199,6 +221,15 @@ export const api = {
 
   listLoans: (params: { status?: LoanStatus } = {}) =>
     request<{ loans: Loan[] }>(`/api/loans${toQueryString(params)}`),
+  getLoan: (id: string) => request<{ loan: LoanWithRepayments }>(`/api/loans/${id}`),
+  createLoan: (input: CreateLoanInput) =>
+    request<{ loan: Loan }>('/api/loans', { method: 'POST', body: JSON.stringify(input) }),
+  repayLoan: (id: string, input: RepayLoanInput) =>
+    request<{ loan: Loan; repayment: LoanRepayment }>(`/api/loans/${id}/repay`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
+  deleteLoan: (id: string) => request<{ success: boolean }>(`/api/loans/${id}`, { method: 'DELETE' }),
 
   listGoals: () => request<{ goals: Goal[] }>('/api/goals'),
 };
