@@ -1,10 +1,11 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { ArrowLeftRight, Landmark, Target, TrendingUp, Wallet } from 'lucide-react';
+import { Landmark, Target, TrendingUp, Wallet } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { TransactionsPage } from './pages/TransactionsPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 function CatchAll() {
@@ -24,10 +25,7 @@ function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route
-          path="/transactions"
-          element={<PlaceholderPage title="Transactions" icon={ArrowLeftRight} />}
-        />
+        <Route path="/transactions" element={<TransactionsPage />} />
         <Route
           path="/investments"
           element={<PlaceholderPage title="Investments" icon={TrendingUp} />}

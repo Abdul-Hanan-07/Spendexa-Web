@@ -103,6 +103,13 @@ export interface ListTransactionsParams {
   offset?: number;
 }
 
+export interface CreateTransactionInput {
+  amount: number;
+  type: TransactionType;
+  category: string;
+  date: string;
+}
+
 class ApiError extends Error {}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -150,6 +157,15 @@ export const api = {
 
   listTransactions: (params: ListTransactionsParams = {}) =>
     request<{ transactions: Transaction[] }>(`/api/transactions${toQueryString(params)}`),
+  createTransaction: (input: CreateTransactionInput) =>
+    request<{ transaction: Transaction; currentBalance: string; budget: ActiveBudgetSummary | null }>(
+      '/api/transactions',
+      { method: 'POST', body: JSON.stringify(input) },
+    ),
+  deleteTransaction: (id: string) =>
+    request<{ success: boolean; currentBalance: string }>(`/api/transactions/${id}`, {
+      method: 'DELETE',
+    }),
 
   listInvestments: (params: { type?: InvestmentType } = {}) =>
     request<{ investments: Investment[] }>(`/api/investments${toQueryString(params)}`),
