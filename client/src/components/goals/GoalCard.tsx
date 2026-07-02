@@ -21,17 +21,17 @@ export function GoalCard({
   const progress = (goal.progress * 100).toFixed(1);
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
       <div className="flex items-start justify-between mb-4">
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold text-zinc-100">{goal.name}</h3>
-          <p className="text-xs text-zinc-500 mt-1">{formatTimeRemaining(goal.deadline)}</p>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">{goal.name}</h3>
+          <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">{formatTimeRemaining(goal.deadline)}</p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             type="button"
             onClick={onUpdateProgress}
-            className="text-xs font-semibold text-amber-500 hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1"
+            className="text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1"
           >
             <TrendingUp size={13} />
             Update
@@ -39,14 +39,14 @@ export function GoalCard({
           <button
             type="button"
             onClick={onEdit}
-            className="text-zinc-400 hover:text-zinc-100 p-1.5 rounded-lg hover:bg-zinc-800/60 transition-colors"
+            className="text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800/60 transition-colors"
           >
             <Pencil size={15} />
           </button>
           <button
             type="button"
             onClick={onDelete}
-            className="text-zinc-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+            className="text-slate-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
           >
             <Trash2 size={15} />
           </button>
@@ -55,14 +55,14 @@ export function GoalCard({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-slate-500 dark:text-zinc-400">
             {formatCurrency(current, currency)} of {formatCurrency(target, currency)}
           </p>
-          <p className={`text-xs font-medium ${goal.progress >= 1 ? 'text-emerald-400' : 'text-zinc-400'}`}>
+          <p className={`text-xs font-medium ${goal.progress >= 1 ? 'text-green-700 dark:text-emerald-400' : 'text-slate-500 dark:text-zinc-400'}`}>
             {progress}%
           </p>
         </div>
-        <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
           <div
             className="h-full transition-all"
             style={{
@@ -73,7 +73,7 @@ export function GoalCard({
         </div>
       </div>
 
-      <p className="text-xs text-zinc-500 mt-3">Due: {formatDate(goal.deadline)}</p>
+      <p className="text-xs text-slate-500 dark:text-zinc-500 mt-3">Due: {formatDate(goal.deadline)}</p>
     </div>
   );
 }

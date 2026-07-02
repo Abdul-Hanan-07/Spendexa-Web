@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { AuthCard } from '../components/AuthCard';
 
 const inputClass =
-  'w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors';
+  'w-full rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-800/50 px-3 py-2 text-sm text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-500 focus:border-amber-600 dark:focus:border-amber-500 transition-colors';
 
 export function RegisterPage() {
   const { register } = useAuth();
@@ -35,7 +35,7 @@ export function RegisterPage() {
     <AuthCard title="Create your account">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1.5">Name</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-zinc-300 mb-1.5">Name</label>
           <input
             type="text"
             required
@@ -45,7 +45,7 @@ export function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1.5">Email</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-zinc-300 mb-1.5">Email</label>
           <input
             type="email"
             required
@@ -55,7 +55,7 @@ export function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1.5">Password</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-zinc-300 mb-1.5">Password</label>
           <input
             type="password"
             required
@@ -66,8 +66,8 @@ export function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-            Currency <span className="text-zinc-500 font-normal">(optional, default PKR)</span>
+          <label className="block text-sm font-medium text-slate-700 dark:text-zinc-300 mb-1.5">
+            Currency <span className="text-slate-500 dark:text-zinc-500 font-normal">(optional, default PKR)</span>
           </label>
           <input
             type="text"
@@ -77,18 +77,18 @@ export function RegisterPage() {
             className={inputClass}
           />
         </div>
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-amber-400 disabled:opacity-50 transition-colors"
+          className="w-full rounded-lg bg-amber-600 dark:bg-amber-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 dark:hover:bg-amber-400 disabled:opacity-50 transition-colors"
         >
           {submitting ? 'Creating account...' : 'Sign up'}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-zinc-500">
+      <p className="mt-6 text-center text-sm text-slate-500 dark:text-zinc-500">
         Already have an account?{' '}
-        <Link to="/login" className="font-medium text-amber-500 hover:text-amber-400">
+        <Link to="/login" className="font-medium text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400">
           Log in
         </Link>
       </p>

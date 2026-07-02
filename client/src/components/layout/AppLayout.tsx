@@ -7,7 +7,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-zinc-950 md:flex">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 md:flex">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 min-w-0 flex flex-col">
         <Header onMenuClick={() => setSidebarOpen(true)} />

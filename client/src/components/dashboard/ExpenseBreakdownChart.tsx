@@ -3,9 +3,9 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import type { Transaction } from '../../lib/api';
 import { buildExpenseBreakdown } from '../../lib/chartData';
 import { formatCurrency } from '../../lib/format';
+import { useTheme } from '../../context/ThemeContext';
+import { getCategoricalColors, getChartChrome } from '../../lib/chartTheme';
 import { EmptyState } from './EmptyState';
-
-const COLORS = ['#F59E0B', '#14B8A6', '#6366F1', '#F43F5E', '#A855F7', '#84CC16'];
 
 export function ExpenseBreakdownChart({
   transactions,
@@ -14,13 +14,16 @@ export function ExpenseBreakdownChart({
   transactions: Transaction[];
   currency: string;
 }) {
+  const { theme } = useTheme();
+  const COLORS = getCategoricalColors(theme);
+  const chrome = getChartChrome(theme);
   const data = buildExpenseBreakdown(transactions);
   const total = data.reduce((sum, d) => sum + d.amount, 0);
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-      <h3 className="text-sm font-semibold text-zinc-100 mb-1">Expense breakdown</h3>
-      <p className="text-xs text-zinc-500 mb-4">By category, last 90 days</p>
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-1">Expense breakdown</h3>
+      <p className="text-xs text-slate-500 dark:text-zinc-500 mb-4">By category, last 90 days</p>
       {data.length === 0 ? (
         <EmptyState
           icon={PieChartIcon}
@@ -46,8 +49,8 @@ export function ExpenseBreakdownChart({
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: '#18181b', border: '1px solid #3f3f46', borderRadius: 8 }}
-                  labelStyle={{ color: '#e4e4e7' }}
+                  contentStyle={{ background: chrome.tooltipBg, border: `1px solid ${chrome.tooltipBorder}`, borderRadius: 8 }}
+                  labelStyle={{ color: chrome.tooltipLabel }}
                   formatter={(value, name) => [formatCurrency(Number(value), currency), String(name)]}
                 />
               </PieChart>
@@ -61,9 +64,9 @@ export function ExpenseBreakdownChart({
                     className="w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   />
-                  <span className="text-zinc-300 truncate">{entry.category}</span>
+                  <span className="text-slate-700 dark:text-zinc-300 truncate">{entry.category}</span>
                 </span>
-                <span className="text-zinc-500 shrink-0">
+                <span className="text-slate-500 dark:text-zinc-500 shrink-0">
                   {total > 0 ? Math.round((entry.amount / total) * 100) : 0}%
                 </span>
               </div>

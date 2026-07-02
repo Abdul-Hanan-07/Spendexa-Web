@@ -6,8 +6,8 @@ export const LOAN_STATUS_LABELS: Record<LoanStatus, string> = {
 };
 
 export const LOAN_STATUS_BADGE_CLASSES: Record<LoanStatus, string> = {
-  ACTIVE: 'bg-amber-500/10 text-amber-400',
-  PAID_OFF: 'bg-emerald-500/10 text-emerald-400',
+  ACTIVE: 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+  PAID_OFF: 'bg-emerald-500/10 text-green-700 dark:text-emerald-400',
 };
 
 export function computeTotalToRepay(principal: number, interestRate: number): number {

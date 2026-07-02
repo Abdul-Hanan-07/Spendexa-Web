@@ -12,8 +12,8 @@ export function BudgetWidget({
 }) {
   if (!budget) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-zinc-100 mb-2">Budget</h3>
+      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-2">Budget</h3>
         <EmptyState
           icon={Wallet}
           title="No active budget"
@@ -31,27 +31,27 @@ export function BudgetWidget({
   const pctSpent = start > 0 ? Math.min(Math.max((spent / start) * 100, 0), 100) : 0;
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-zinc-100">Budget · {budget.name}</h3>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">Budget · {budget.name}</h3>
         {budget.isNearLimit && (
-          <span className="flex items-center gap-1 text-xs font-medium text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-md">
+          <span className="flex items-center gap-1 text-xs font-medium text-yellow-700 dark:text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-md">
             <AlertTriangle size={12} />
             Near limit
           </span>
         )}
       </div>
       <div className="flex items-baseline justify-between mb-2">
-        <span className="text-xl font-bold text-zinc-100">{formatCurrency(remaining, currency)}</span>
-        <span className="text-xs text-zinc-500">remaining of {formatCurrency(start, currency)}</span>
+        <span className="text-xl font-bold text-slate-900 dark:text-zinc-100">{formatCurrency(remaining, currency)}</span>
+        <span className="text-xs text-slate-500 dark:text-zinc-500">remaining of {formatCurrency(start, currency)}</span>
       </div>
-      <div className="w-full h-2.5 rounded-full bg-zinc-800 overflow-hidden">
+      <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-zinc-800 overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${budget.isNearLimit ? 'bg-yellow-500' : 'bg-amber-500'}`}
+          className={`h-full rounded-full transition-all ${budget.isNearLimit ? 'bg-yellow-600 dark:bg-yellow-500' : 'bg-amber-600 dark:bg-amber-500'}`}
           style={{ width: `${pctSpent}%` }}
         />
       </div>
-      <p className="text-xs text-zinc-500 mt-2">{formatCurrency(spent, currency)} spent so far</p>
+      <p className="text-xs text-slate-500 dark:text-zinc-500 mt-2">{formatCurrency(spent, currency)} spent so far</p>
     </div>
   );
 }

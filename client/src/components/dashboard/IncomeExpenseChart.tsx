@@ -3,6 +3,8 @@ import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis
 import type { Transaction } from '../../lib/api';
 import { buildIncomeVsExpense } from '../../lib/chartData';
 import { formatCompactNumber, formatCurrency } from '../../lib/format';
+import { useTheme } from '../../context/ThemeContext';
+import { getChartChrome } from '../../lib/chartTheme';
 import { EmptyState } from './EmptyState';
 
 export function IncomeExpenseChart({
@@ -12,6 +14,8 @@ export function IncomeExpenseChart({
   transactions: Transaction[];
   currency: string;
 }) {
+  const { theme } = useTheme();
+  const chrome = getChartChrome(theme);
   const { label, income, expense } = buildIncomeVsExpense(transactions);
   const data = [
     { name: 'Income', value: income, fill: '#34d399' },
@@ -20,9 +24,9 @@ export function IncomeExpenseChart({
   const isEmpty = income === 0 && expense === 0;
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-      <h3 className="text-sm font-semibold text-zinc-100 mb-1">Income vs. expenses</h3>
-      <p className="text-xs text-zinc-500 mb-4">{label}</p>
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-1">Income vs. expenses</h3>
+      <p className="text-xs text-slate-500 dark:text-zinc-500 mb-4">{label}</p>
       {isEmpty ? (
         <EmptyState
           icon={BarChart3}
@@ -32,10 +36,10 @@ export function IncomeExpenseChart({
       ) : (
         <ResponsiveContainer width="100%" height={224}>
           <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+            <CartesianGrid stroke={chrome.grid} strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="name" stroke={chrome.axis} fontSize={12} tickLine={false} axisLine={false} />
             <YAxis
-              stroke="#71717a"
+              stroke={chrome.axis}
               fontSize={11}
               tickLine={false}
               axisLine={false}
@@ -43,10 +47,10 @@ export function IncomeExpenseChart({
               tickFormatter={(v: number) => formatCompactNumber(v)}
             />
             <Tooltip
-              contentStyle={{ background: '#18181b', border: '1px solid #3f3f46', borderRadius: 8 }}
-              labelStyle={{ color: '#e4e4e7' }}
+              contentStyle={{ background: chrome.tooltipBg, border: `1px solid ${chrome.tooltipBorder}`, borderRadius: 8 }}
+              labelStyle={{ color: chrome.tooltipLabel }}
               formatter={(value) => formatCurrency(Number(value), currency)}
-              cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+              cursor={{ fill: chrome.cursorFill }}
             />
             <Bar dataKey="value" radius={[6, 6, 0, 0]} isAnimationActive={false}>
               {data.map((entry) => (

@@ -63,13 +63,13 @@ export function GoalsPage() {
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-zinc-100">Goals</h1>
-            <p className="text-xs text-zinc-500 mt-0.5">Track your financial targets.</p>
+            <h1 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">Goals</h1>
+            <p className="text-xs text-slate-500 dark:text-zinc-500 mt-0.5">Track your financial targets.</p>
           </div>
           <button
             type="button"
             onClick={() => setShowAddPanel(true)}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-amber-500 hover:bg-amber-400 px-4 py-2.5 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-amber-600 dark:bg-amber-500 hover:bg-amber-700 dark:hover:bg-amber-400 px-4 py-2.5 rounded-lg transition-colors"
           >
             <Plus size={16} />
             Add Goal
@@ -77,28 +77,28 @@ export function GoalsPage() {
         </div>
 
         {loading ? (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex items-center justify-center h-48 text-zinc-500 text-sm">
+          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 flex items-center justify-center h-48 text-slate-500 dark:text-zinc-500 text-sm">
             Loading goals...
           </div>
         ) : error ? (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex flex-col items-center justify-center h-48 text-center gap-2">
-            <p className="text-sm font-medium text-zinc-200">Couldn't load goals</p>
-            <p className="text-xs text-zinc-500">{error}</p>
+          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 flex flex-col items-center justify-center h-48 text-center gap-2">
+            <p className="text-sm font-medium text-slate-800 dark:text-zinc-200">Couldn't load goals</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-500">{error}</p>
           </div>
         ) : goals.length === 0 ? (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
             <div className="flex flex-col items-center justify-center text-center py-10 px-4">
-              <div className="w-11 h-11 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
+              <div className="w-11 h-11 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-500 dark:text-zinc-500 mb-3">
                 <Target size={20} />
               </div>
-              <p className="text-sm font-medium text-zinc-200">No goals yet</p>
-              <p className="text-xs text-zinc-500 mt-1 max-w-xs">
+              <p className="text-sm font-medium text-slate-800 dark:text-zinc-200">No goals yet</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1 max-w-xs">
                 Create a goal to track progress toward your financial targets.
               </p>
               <button
                 type="button"
                 onClick={() => setShowAddPanel(true)}
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors"
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors"
               >
                 Add your first goal
               </button>

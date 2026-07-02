@@ -20,7 +20,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <AppLayout>
-        <div className="flex items-center justify-center h-64 text-zinc-500 text-sm">
+        <div className="flex items-center justify-center h-64 text-slate-500 dark:text-zinc-500 text-sm">
           Loading your dashboard...
         </div>
       </AppLayout>
@@ -31,8 +31,8 @@ export function DashboardPage() {
     return (
       <AppLayout>
         <div className="flex flex-col items-center justify-center h-64 text-center gap-2">
-          <p className="text-sm font-medium text-zinc-200">Couldn't load your dashboard</p>
-          <p className="text-xs text-zinc-500">{error ?? 'Something went wrong'}</p>
+          <p className="text-sm font-medium text-slate-800 dark:text-zinc-200">Couldn't load your dashboard</p>
+          <p className="text-xs text-slate-500 dark:text-zinc-500">{error ?? 'Something went wrong'}</p>
         </div>
       </AppLayout>
     );

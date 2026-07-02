@@ -20,14 +20,14 @@ export function ConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-        <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 mb-4">
+      <div className="relative w-full max-w-sm bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6">
+        <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-600 dark:text-red-400 mb-4">
           <AlertTriangle size={18} />
         </div>
-        <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
-        <p className="text-xs text-zinc-500 mt-1.5">{description}</p>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">{title}</h3>
+        <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1.5">{description}</p>
         {error && (
-          <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mt-3">
+          <p className="text-xs text-red-600 dark:text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mt-3">
             {error}
           </p>
         )}
@@ -35,7 +35,7 @@ export function ConfirmDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="text-sm font-medium text-zinc-400 hover:text-zinc-100 px-3.5 py-2 rounded-lg hover:bg-zinc-800/60 transition-colors"
+            className="text-sm font-medium text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 px-3.5 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800/60 transition-colors"
           >
             Cancel
           </button>
@@ -43,7 +43,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="text-sm font-medium text-white bg-red-500 hover:bg-red-600 disabled:opacity-60 px-3.5 py-2 rounded-lg transition-colors"
+            className="text-sm font-medium text-white bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 disabled:opacity-60 px-3.5 py-2 rounded-lg transition-colors"
           >
             {loading ? 'Deleting…' : confirmLabel}
           </button>

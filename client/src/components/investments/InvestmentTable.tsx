@@ -18,7 +18,7 @@ export function InvestmentTable({
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-xs font-medium text-zinc-500 border-b border-zinc-800">
+          <tr className="text-left text-xs font-medium text-slate-500 dark:text-zinc-500 border-b border-slate-200 dark:border-zinc-800">
             <th className="pb-3 pr-4 font-medium">Asset</th>
             <th className="pb-3 pr-4 font-medium">Type</th>
             <th className="pb-3 pr-4 font-medium text-right">Amount</th>
@@ -29,7 +29,7 @@ export function InvestmentTable({
             <th className="pb-3 font-medium text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-800">
+        <tbody className="divide-y divide-slate-200 dark:divide-zinc-800">
           {investments.map((inv) => {
             const amount = Number(inv.amount);
             const currentValue = Number(inv.currentValue);
@@ -38,7 +38,7 @@ export function InvestmentTable({
             const isGain = gainLoss >= 0;
             return (
               <tr key={inv.id}>
-                <td className="py-3.5 pr-4 font-medium text-zinc-200 whitespace-nowrap">{inv.assetName}</td>
+                <td className="py-3.5 pr-4 font-medium text-slate-800 dark:text-zinc-200 whitespace-nowrap">{inv.assetName}</td>
                 <td className="py-3.5 pr-4 whitespace-nowrap">
                   <span
                     className={`text-xs font-medium px-2 py-1 rounded-md ${INVESTMENT_TYPE_BADGE_CLASSES[inv.type]}`}
@@ -46,31 +46,31 @@ export function InvestmentTable({
                     {INVESTMENT_TYPE_LABELS[inv.type]}
                   </span>
                 </td>
-                <td className="py-3.5 pr-4 text-right text-zinc-300 whitespace-nowrap">
+                <td className="py-3.5 pr-4 text-right text-slate-700 dark:text-zinc-300 whitespace-nowrap">
                   {formatCurrency(inv.amount, currency)}
                 </td>
-                <td className="py-3.5 pr-4 text-right text-zinc-400 whitespace-nowrap">
+                <td className="py-3.5 pr-4 text-right text-slate-500 dark:text-zinc-400 whitespace-nowrap">
                   {units > 0 ? units.toLocaleString('en-US', { maximumFractionDigits: 4 }) : '—'}
                 </td>
-                <td className="py-3.5 pr-4 text-right text-zinc-200 font-medium whitespace-nowrap">
+                <td className="py-3.5 pr-4 text-right text-slate-800 dark:text-zinc-200 font-medium whitespace-nowrap">
                   {formatCurrency(inv.currentValue, currency)}
                 </td>
                 <td
                   className={`py-3.5 pr-4 text-right font-semibold whitespace-nowrap ${
-                    isGain ? 'text-emerald-400' : 'text-red-400'
+                    isGain ? 'text-green-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
                   }`}
                 >
                   {isGain ? '+' : '-'}
                   {formatCurrency(Math.abs(gainLoss), currency)}
                 </td>
-                <td className="py-3.5 pr-4 text-zinc-500 whitespace-nowrap">{formatDate(inv.purchaseDate)}</td>
+                <td className="py-3.5 pr-4 text-slate-500 dark:text-zinc-500 whitespace-nowrap">{formatDate(inv.purchaseDate)}</td>
                 <td className="py-3.5">
                   <div className="flex items-center justify-end gap-1.5">
                     <button
                       type="button"
                       onClick={() => onUpdateValue(inv)}
                       aria-label={`Update value: ${inv.assetName}`}
-                      className="text-zinc-500 hover:text-amber-500 p-1.5 rounded-lg hover:bg-amber-500/10 transition-colors"
+                      className="text-slate-500 dark:text-zinc-500 hover:text-amber-800 dark:hover:text-amber-500 p-1.5 rounded-lg hover:bg-amber-500/10 transition-colors"
                     >
                       <PenLine size={15} />
                     </button>
@@ -78,7 +78,7 @@ export function InvestmentTable({
                       type="button"
                       onClick={() => onDelete(inv)}
                       aria-label={`Delete investment: ${inv.assetName}`}
-                      className="text-zinc-600 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+                      className="text-slate-400 dark:text-zinc-600 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
                     >
                       <Trash2 size={15} />
                     </button>
