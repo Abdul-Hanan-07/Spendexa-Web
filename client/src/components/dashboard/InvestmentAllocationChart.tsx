@@ -10,7 +10,7 @@ const TYPE_LABELS: Record<string, string> = {
   METAL: 'Metals',
 };
 
-const COLORS = ['#6366f1', '#f59e0b', '#34d399', '#f87171'];
+const COLORS = ['#F59E0B', '#2DD4BF', '#818CF8', '#FB7185'];
 
 export function InvestmentAllocationChart({
   investments,

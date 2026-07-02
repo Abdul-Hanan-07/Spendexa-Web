@@ -21,7 +21,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-zinc-800 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center text-white font-bold text-sm">
               S
             </div>
             <span className="font-semibold text-zinc-100">Spendexa</span>
@@ -39,7 +39,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-indigo-500/10 text-indigo-400'
+                    ? 'bg-amber-500/10 text-amber-500'
                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60'
                 }`
               }

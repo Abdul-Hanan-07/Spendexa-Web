@@ -80,7 +80,7 @@ export function InvestmentsPage() {
           <button
             type="button"
             onClick={() => setShowAddPanel(true)}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2.5 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-amber-500 hover:bg-amber-400 px-4 py-2.5 rounded-lg transition-colors"
           >
             <Plus size={16} />
             Add Investment
@@ -122,7 +122,7 @@ export function InvestmentsPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddPanel(true)}
-                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg transition-colors"
+                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors"
                 >
                   Add your first investment
                 </button>

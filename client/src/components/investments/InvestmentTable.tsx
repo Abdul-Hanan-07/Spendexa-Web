@@ -70,7 +70,7 @@ export function InvestmentTable({
                       type="button"
                       onClick={() => onUpdateValue(inv)}
                       aria-label={`Update value: ${inv.assetName}`}
-                      className="text-zinc-500 hover:text-indigo-400 p-1.5 rounded-lg hover:bg-indigo-500/10 transition-colors"
+                      className="text-zinc-500 hover:text-amber-500 p-1.5 rounded-lg hover:bg-amber-500/10 transition-colors"
                     >
                       <PenLine size={15} />
                     </button>

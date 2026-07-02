@@ -3,10 +3,10 @@ import type { LucideIcon } from 'lucide-react';
 type Tone = 'default' | 'positive' | 'negative' | 'warning';
 
 const TONE_STYLES: Record<Tone, { icon: string; value: string }> = {
-  default: { icon: 'bg-indigo-500/10 text-indigo-400', value: 'text-zinc-100' },
+  default: { icon: 'bg-amber-500/10 text-amber-500', value: 'text-zinc-100' },
   positive: { icon: 'bg-emerald-500/10 text-emerald-400', value: 'text-emerald-400' },
   negative: { icon: 'bg-red-500/10 text-red-400', value: 'text-red-400' },
-  warning: { icon: 'bg-amber-500/10 text-amber-400', value: 'text-amber-400' },
+  warning: { icon: 'bg-yellow-500/10 text-yellow-400', value: 'text-yellow-400' },
 };
 
 export function SummaryCard({

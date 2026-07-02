@@ -35,7 +35,7 @@ export function BudgetWidget({
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-zinc-100">Budget · {budget.name}</h3>
         {budget.isNearLimit && (
-          <span className="flex items-center gap-1 text-xs font-medium text-amber-400 bg-amber-500/10 px-2 py-1 rounded-md">
+          <span className="flex items-center gap-1 text-xs font-medium text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-md">
             <AlertTriangle size={12} />
             Near limit
           </span>
@@ -47,7 +47,7 @@ export function BudgetWidget({
       </div>
       <div className="w-full h-2.5 rounded-full bg-zinc-800 overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${budget.isNearLimit ? 'bg-amber-400' : 'bg-indigo-500'}`}
+          className={`h-full rounded-full transition-all ${budget.isNearLimit ? 'bg-yellow-500' : 'bg-amber-500'}`}
           style={{ width: `${pctSpent}%` }}
         />
       </div>

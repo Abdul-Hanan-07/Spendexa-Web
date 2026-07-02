@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { AuthCard } from '../components/AuthCard';
 
 const inputClass =
-  'w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors';
+  'w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors';
 
 export function RegisterPage() {
   const { register } = useAuth();
@@ -81,14 +81,14 @@ export function RegisterPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-indigo-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 disabled:opacity-50 transition-colors"
+          className="w-full rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-amber-400 disabled:opacity-50 transition-colors"
         >
           {submitting ? 'Creating account...' : 'Sign up'}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-zinc-500">
         Already have an account?{' '}
-        <Link to="/login" className="font-medium text-indigo-400 hover:text-indigo-300">
+        <Link to="/login" className="font-medium text-amber-500 hover:text-amber-400">
           Log in
         </Link>
       </p>

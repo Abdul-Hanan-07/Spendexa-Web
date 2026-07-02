@@ -34,7 +34,7 @@ export function NetWorthChart({
               key={d}
               onClick={() => setRange(d)}
               className={`px-2.5 py-1 rounded-md transition-colors ${
-                range === d ? 'bg-indigo-500 text-white' : 'text-zinc-400 hover:text-zinc-200'
+                range === d ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               {d}d
@@ -69,13 +69,13 @@ export function NetWorthChart({
             <Tooltip
               contentStyle={{ background: '#18181b', border: '1px solid #3f3f46', borderRadius: 8 }}
               labelStyle={{ color: '#e4e4e7' }}
-              itemStyle={{ color: '#818cf8' }}
+              itemStyle={{ color: '#FBBF24' }}
               formatter={(value) => [formatCurrency(Number(value), currency), 'Balance']}
             />
             <Line
               type="monotone"
               dataKey="balance"
-              stroke="#6366f1"
+              stroke="#F59E0B"
               strokeWidth={2}
               dot={false}
               isAnimationActive={false}

@@ -19,7 +19,7 @@ const CATEGORY_PRESETS = [
 ];
 
 const fieldClass =
-  'w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50';
+  'w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50';
 
 function todayInputValue() {
   return new Date().toISOString().slice(0, 10);
@@ -200,7 +200,7 @@ export function AddTransactionPanel({
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 text-sm font-semibold text-white bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 py-2.5 rounded-lg transition-colors"
+              className="flex-1 text-sm font-semibold text-white bg-amber-500 hover:bg-amber-400 disabled:opacity-60 py-2.5 rounded-lg transition-colors"
             >
               {submitting ? 'Adding…' : 'Add transaction'}
             </button>

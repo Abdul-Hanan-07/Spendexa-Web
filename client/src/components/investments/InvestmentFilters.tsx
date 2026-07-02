@@ -8,7 +8,7 @@ export interface InvestmentFilterState {
 export const EMPTY_INVESTMENT_FILTERS: InvestmentFilterState = { type: 'ALL' };
 
 const selectClass =
-  'bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50';
+  'bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50';
 
 export function InvestmentFilters({
   filters,
@@ -44,7 +44,7 @@ export function InvestmentFilters({
           <button
             type="button"
             onClick={onClear}
-            className="text-xs font-medium text-indigo-400 hover:text-indigo-300 px-3 py-2"
+            className="text-xs font-medium text-amber-500 hover:text-amber-400 px-3 py-2"
           >
             Clear filters
           </button>

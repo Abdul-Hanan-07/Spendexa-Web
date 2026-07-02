@@ -6,7 +6,7 @@ export function PlaceholderPage({ title, icon: Icon }: { title: string; icon: Lu
     <AppLayout>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center justify-center text-center py-24 bg-zinc-900 border border-zinc-800 rounded-2xl">
-          <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4">
+          <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4">
             <Icon size={22} />
           </div>
           <h2 className="text-lg font-semibold text-zinc-100">{title}</h2>

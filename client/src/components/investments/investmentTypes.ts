@@ -11,7 +11,7 @@ export const INVESTMENT_TYPE_LABELS: Record<InvestmentType, string> = {
 
 export const INVESTMENT_TYPE_BADGE_CLASSES: Record<InvestmentType, string> = {
   PSX: 'bg-indigo-500/10 text-indigo-400',
-  CRYPTO: 'bg-amber-500/10 text-amber-400',
+  CRYPTO: 'bg-violet-500/10 text-violet-400',
   REAL_ESTATE: 'bg-sky-500/10 text-sky-400',
   METAL: 'bg-fuchsia-500/10 text-fuchsia-400',
 };

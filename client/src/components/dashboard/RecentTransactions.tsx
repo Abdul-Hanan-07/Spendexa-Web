@@ -16,7 +16,7 @@ export function RecentTransactions({
     <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-zinc-100">Recent transactions</h3>
-        <Link to="/transactions" className="text-xs font-medium text-indigo-400 hover:text-indigo-300">
+        <Link to="/transactions" className="text-xs font-medium text-amber-500 hover:text-amber-400">
           View all
         </Link>
       </div>

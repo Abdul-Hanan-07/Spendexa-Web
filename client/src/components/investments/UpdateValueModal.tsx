@@ -42,7 +42,7 @@ export function UpdateValueModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-        <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4">
+        <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4">
           <RefreshCw size={18} />
         </div>
         <h3 className="text-sm font-semibold text-zinc-100">Update current value</h3>
@@ -63,7 +63,7 @@ export function UpdateValueModal({
             autoFocus
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50"
+            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50"
           />
 
           {error && (
@@ -83,7 +83,7 @@ export function UpdateValueModal({
             <button
               type="submit"
               disabled={submitting}
-              className="text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 px-3.5 py-2 rounded-lg transition-colors"
+              className="text-sm font-medium text-white bg-amber-500 hover:bg-amber-400 disabled:opacity-60 px-3.5 py-2 rounded-lg transition-colors"
             >
               {submitting ? 'Saving…' : 'Save'}
             </button>

@@ -5,7 +5,7 @@ export function AuthCard({ title, children }: { title: string; children: ReactNo
     <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">
+          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-white font-bold text-sm">
             S
           </div>
           <span className="text-lg font-semibold text-zinc-100">Spendexa</span>
