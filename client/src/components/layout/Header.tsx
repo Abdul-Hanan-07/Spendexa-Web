@@ -1,12 +1,11 @@
-import { Menu, LogOut, Sun, Moon } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { formatFullDate } from '../../lib/format';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -30,13 +29,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <button
-          onClick={toggleTheme}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 w-9 h-9 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800/60 transition-colors"
-        >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
+        <ThemeToggle />
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800/60 transition-colors"
