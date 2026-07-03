@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { AuthCard } from '../components/AuthCard';
 
 const inputClass =
-  'w-full rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-800/50 px-3 py-2 text-sm text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-600 dark:focus:ring-amber-500 focus:border-amber-600 dark:focus:border-amber-500 transition-colors';
+  'w-full rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-800/50 px-3 py-2 text-sm text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 outline-none focus:border-amber-500 dark:focus:border-amber-500 focus:ring-4 focus:ring-amber-500/15 dark:focus:ring-amber-500/20 transition-all duration-200';
 
 export function RegisterPage() {
   const { register } = useAuth();
@@ -32,7 +33,7 @@ export function RegisterPage() {
   }
 
   return (
-    <AuthCard title="Create your account">
+    <AuthCard title="Create your account" subtitle="Start tracking your finances in minutes">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-zinc-300 mb-1.5">Name</label>
@@ -77,13 +78,15 @@ export function RegisterPage() {
             className={inputClass}
           />
         </div>
-        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {error && (
+          <p className="text-sm text-red-600 dark:text-red-400 animate-[error-in_200ms_ease-out]">{error}</p>
+        )}
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-amber-600 dark:bg-amber-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 dark:hover:bg-amber-400 disabled:opacity-50 transition-colors"
+          className="w-full rounded-lg bg-amber-600 dark:bg-amber-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm shadow-amber-600/20 hover:bg-amber-700 dark:hover:bg-amber-400 hover:shadow-md hover:shadow-amber-600/30 active:scale-[0.98] disabled:opacity-60 disabled:hover:shadow-sm disabled:active:scale-100 transition-all duration-150 flex items-center justify-center"
         >
-          {submitting ? 'Creating account...' : 'Sign up'}
+          {submitting ? <Loader2 size={18} className="animate-spin" /> : 'Sign up'}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-slate-500 dark:text-zinc-500">
