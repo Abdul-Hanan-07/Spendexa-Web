@@ -89,7 +89,7 @@ router.get('/history', requireAuth, async (req, res) => {
     orderBy: { createdAt: 'desc' },
   });
 
-  return res.json({ budgets });
+  return res.json({ budgets: budgets.map(buildBudgetPayload) });
 });
 
 router.patch('/:id/deactivate', requireAuth, async (req, res) => {
@@ -108,7 +108,7 @@ router.patch('/:id/deactivate', requireAuth, async (req, res) => {
     data: { active: false },
   });
 
-  return res.json({ budget: updated });
+  return res.json({ budget: buildBudgetPayload(updated) });
 });
 
 export default router;

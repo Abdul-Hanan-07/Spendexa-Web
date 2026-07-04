@@ -21,16 +21,9 @@ export function isBudgetWithinPeriod(budget: PeriodInput, referenceDate: Date = 
   return referenceDate >= budget.startDate && referenceDate <= budget.endDate;
 }
 
-type BudgetPayloadInput = NearLimitInput &
-  PeriodInput & { id: string; name: string; spentAmount: Prisma.Decimal };
-
-export function buildBudgetPayload(budget: BudgetPayloadInput) {
+export function buildBudgetPayload<T extends NearLimitInput & PeriodInput & { id: string }>(budget: T) {
   return {
-    id: budget.id,
-    name: budget.name,
-    startAmount: budget.startAmount,
-    remainingAmount: budget.remainingAmount,
-    spentAmount: budget.spentAmount,
+    ...budget,
     isNearLimit: isBudgetNearLimit(budget),
     isWithinPeriod: isBudgetWithinPeriod(budget),
   };
