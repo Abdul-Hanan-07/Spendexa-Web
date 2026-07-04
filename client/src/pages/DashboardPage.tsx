@@ -52,24 +52,27 @@ export function DashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <SummaryCard
             label="Current Balance"
-            value={formatCurrency(currentBalance, currency)}
+            value={currentBalance}
+            formatValue={(n) => formatCurrency(n, currency)}
             icon={Wallet}
             tone={currentBalance < 0 ? 'negative' : 'default'}
           />
           <SummaryCard
             label="Net Worth"
-            value={formatCurrency(netWorth, currency)}
+            value={netWorth}
+            formatValue={(n) => formatCurrency(n, currency)}
             icon={TrendingUp}
             tone={netWorth >= 0 ? 'positive' : 'negative'}
           />
           <SummaryCard
             label="Total Loan Debt"
-            value={formatCurrency(totalLoanDebt, currency)}
+            value={totalLoanDebt}
+            formatValue={(n) => formatCurrency(n, currency)}
             icon={Landmark}
             tone={totalLoanDebt > 0 ? 'warning' : 'default'}
             subtext={`${activeLoanCount} active loan${activeLoanCount === 1 ? '' : 's'}`}
           />
-          <SummaryCard label="Active Goals" value={String(summary.goalCount)} icon={Target} />
+          <SummaryCard label="Active Goals" value={summary.goalCount} icon={Target} />
         </div>
 
         {/* Balance trend */}

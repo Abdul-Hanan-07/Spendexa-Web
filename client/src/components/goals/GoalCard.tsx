@@ -21,7 +21,7 @@ export function GoalCard({
   const progress = (goal.progress * 100).toFixed(1);
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card card-lift p-5">
       <div className="flex items-start justify-between mb-4">
         <div className="min-w-0">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">{goal.name}</h3>

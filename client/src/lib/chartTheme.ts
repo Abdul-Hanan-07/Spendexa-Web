@@ -31,6 +31,9 @@ export function getAccentText(theme: Theme) {
   return theme === 'dark' ? '#FBBF24' : '#B45309';
 }
 
+// Neutral gray for the aggregated "Other" donut slice; readable on both themes.
+export const OTHER_SLICE_COLOR = '#6B7280';
+
 export function getCategoricalColors(theme: Theme) {
   return theme === 'dark'
     ? ['#F59E0B', '#14B8A6', '#6366F1', '#F43F5E', '#A855F7', '#84CC16']

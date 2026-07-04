@@ -13,7 +13,7 @@ export function RecentTransactions({
   currency: string;
 }) {
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card card-lift p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">Recent transactions</h3>
         <Link to="/transactions" className="text-xs font-medium text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400">

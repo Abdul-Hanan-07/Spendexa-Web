@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import type { Investment } from '../../lib/api';
-import { buildInvestmentAllocation } from '../../lib/chartData';
+import { buildInvestmentAllocation, groupSmallAllocations } from '../../lib/chartData';
+import type { AllocationSlice } from '../../lib/chartData';
 import { formatCurrency } from '../../lib/format';
 import { useTheme } from '../../context/ThemeContext';
-import { getCategoricalColors, getChartChrome } from '../../lib/chartTheme';
+import { getCategoricalColors, getChartChrome, OTHER_SLICE_COLOR } from '../../lib/chartTheme';
 
 const TYPE_LABELS: Record<string, string> = {
   PSX: 'PSX Stocks',
@@ -22,11 +24,17 @@ export function InvestmentAllocationChart({
   const { theme } = useTheme();
   const COLORS = getCategoricalColors(theme);
   const chrome = getChartChrome(theme);
-  const data = buildInvestmentAllocation(investments);
+  const data = useMemo(
+    () => groupSmallAllocations(buildInvestmentAllocation(investments)),
+    [investments],
+  );
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
+  const sliceColor = (entry: AllocationSlice, index: number) =>
+    entry.isOther ? OTHER_SLICE_COLOR : COLORS[index % COLORS.length];
+
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card card-lift p-5">
       <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-1">Investment allocation</h3>
       <p className="text-xs text-slate-500 dark:text-zinc-500 mb-4">By asset type</p>
       <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -39,11 +47,13 @@ export function InvestmentAllocationChart({
                 nameKey="type"
                 innerRadius={52}
                 outerRadius={78}
-                paddingAngle={2}
-                isAnimationActive={false}
+                paddingAngle={1}
+                animationBegin={0}
+                animationDuration={600}
+                animationEasing="ease-out"
               >
                 {data.map((entry, index) => (
-                  <Cell key={entry.type} fill={COLORS[index % COLORS.length]} stroke="none" />
+                  <Cell key={entry.type} fill={sliceColor(entry, index)} stroke="none" />
                 ))}
               </Pie>
               <Tooltip
@@ -63,7 +73,7 @@ export function InvestmentAllocationChart({
               <span className="flex items-center gap-2 min-w-0">
                 <span
                   className="w-2.5 h-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  style={{ backgroundColor: sliceColor(entry, index) }}
                 />
                 <span className="text-slate-700 dark:text-zinc-300 truncate">{TYPE_LABELS[entry.type] ?? entry.type}</span>
               </span>

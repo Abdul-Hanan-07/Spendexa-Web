@@ -93,7 +93,7 @@ export function InvestmentsPage() {
           onClear={() => setFilters(EMPTY_INVESTMENT_FILTERS)}
         />
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+        <div className="card card-lift p-5">
           {loading ? (
             <div className="flex items-center justify-center h-48 text-slate-500 dark:text-zinc-500 text-sm">
               Loading investments...

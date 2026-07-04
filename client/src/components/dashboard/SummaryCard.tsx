@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { useCountUp } from '../../hooks/useCountUp';
 
 type Tone = 'default' | 'positive' | 'negative' | 'warning';
 
@@ -15,16 +16,21 @@ export function SummaryCard({
   icon: Icon,
   tone = 'default',
   subtext,
+  formatValue,
 }: {
   label: string;
-  value: string;
+  value: number;
   icon: LucideIcon;
   tone?: Tone;
   subtext?: string;
+  formatValue?: (value: number) => string;
 }) {
   const styles = TONE_STYLES[tone];
+  const displayed = useCountUp(value);
+  const format = formatValue ?? ((n: number) => String(Math.round(n)));
+
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 flex flex-col gap-3">
+    <div className="card card-lift p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-slate-500 dark:text-zinc-400">{label}</span>
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${styles.icon}`}>
@@ -32,7 +38,7 @@ export function SummaryCard({
         </div>
       </div>
       <div>
-        <p className={`text-2xl font-bold tracking-tight ${styles.value}`}>{value}</p>
+        <p className={`text-2xl font-bold tracking-tight ${styles.value}`}>{format(displayed)}</p>
         {subtext && <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">{subtext}</p>}
       </div>
     </div>

@@ -21,7 +21,7 @@ export function LoanFilters({
   const hasActiveFilters = filters.status !== 'ALL';
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card p-5">
       <div className="flex flex-wrap items-end gap-4">
         <div>
           <label className="text-xs font-medium text-slate-500 dark:text-zinc-400 mb-1.5 block">Status</label>

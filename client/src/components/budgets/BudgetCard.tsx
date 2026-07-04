@@ -23,7 +23,7 @@ export function BudgetCard({
   const progress = total > 0 ? (spent / total) * 100 : 0;
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden">
+    <div className="card card-lift overflow-hidden">
       <div
         role="button"
         tabIndex={0}

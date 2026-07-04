@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { BarChart3 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Transaction } from '../../lib/api';
@@ -16,15 +17,18 @@ export function IncomeExpenseChart({
 }) {
   const { theme } = useTheme();
   const chrome = getChartChrome(theme);
-  const { label, income, expense } = buildIncomeVsExpense(transactions);
-  const data = [
-    { name: 'Income', value: income, fill: '#34d399' },
-    { name: 'Expense', value: expense, fill: '#f87171' },
-  ];
+  const { label, income, expense } = useMemo(() => buildIncomeVsExpense(transactions), [transactions]);
+  const data = useMemo(
+    () => [
+      { name: 'Income', value: income, fill: '#34d399' },
+      { name: 'Expense', value: expense, fill: '#f87171' },
+    ],
+    [income, expense],
+  );
   const isEmpty = income === 0 && expense === 0;
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card card-lift p-5">
       <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-1">Income vs. expenses</h3>
       <p className="text-xs text-slate-500 dark:text-zinc-500 mb-4">{label}</p>
       {isEmpty ? (
@@ -52,7 +56,7 @@ export function IncomeExpenseChart({
               formatter={(value) => formatCurrency(Number(value), currency)}
               cursor={{ fill: chrome.cursorFill }}
             />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]} isAnimationActive={false}>
+            <Bar dataKey="value" radius={[6, 6, 0, 0]} animationDuration={600} animationEasing="ease-out">
               {data.map((entry) => (
                 <Cell key={entry.name} fill={entry.fill} />
               ))}

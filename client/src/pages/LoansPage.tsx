@@ -140,17 +140,17 @@ export function LoansPage() {
         <LoanFilters filters={filters} onChange={setFilters} onClear={() => setFilters(EMPTY_LOAN_FILTERS)} />
 
         {loading ? (
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 flex items-center justify-center h-48 text-slate-500 dark:text-zinc-500 text-sm">
+          <div className="card card-lift p-5 flex items-center justify-center h-48 text-slate-500 dark:text-zinc-500 text-sm">
             Loading loans...
           </div>
         ) : error ? (
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 flex flex-col items-center justify-center h-48 text-center gap-2">
+          <div className="card card-lift p-5 flex flex-col items-center justify-center h-48 text-center gap-2">
             <p className="text-sm font-medium text-slate-800 dark:text-zinc-200">Couldn't load loans</p>
             <p className="text-xs text-slate-500 dark:text-zinc-500">{error}</p>
           </div>
         ) : loans.length === 0 ? (
           hasActiveFilters ? (
-            <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+            <div className="card card-lift p-5">
               <EmptyState
                 icon={Landmark}
                 title="No matching loans"
@@ -158,7 +158,7 @@ export function LoansPage() {
               />
             </div>
           ) : (
-            <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+            <div className="card card-lift p-5">
               <div className="flex flex-col items-center justify-center text-center py-10 px-4">
                 <div className="w-11 h-11 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-500 dark:text-zinc-500 mb-3">
                   <Landmark size={20} />

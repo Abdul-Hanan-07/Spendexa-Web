@@ -47,9 +47,32 @@ export function buildBalanceTrend(
   return points;
 }
 
+// Slices below this share of the total get merged into a single "Other" slice
+// so donut charts don't shred into illegible slivers.
+const SMALL_SLICE_THRESHOLD = 0.03;
+
+function groupSmallSlices<T>(
+  data: T[],
+  getValue: (item: T) => number,
+  makeOther: (value: number) => T,
+): T[] {
+  const total = data.reduce((sum, item) => sum + getValue(item), 0);
+  if (total <= 0) return data;
+  const minor = data.filter((item) => getValue(item) / total < SMALL_SLICE_THRESHOLD);
+  if (minor.length === 0) return data;
+  const major = data.filter((item) => getValue(item) / total >= SMALL_SLICE_THRESHOLD);
+  const otherValue = minor.reduce((sum, item) => sum + getValue(item), 0);
+  return [...major, makeOther(Math.round(otherValue * 100) / 100)];
+}
+
 export interface CategoryBreakdown {
   category: string;
   amount: number;
+  isOther?: boolean;
+}
+
+export function groupSmallCategories(data: CategoryBreakdown[]): CategoryBreakdown[] {
+  return groupSmallSlices(data, (d) => d.amount, (amount) => ({ category: 'Other', amount, isOther: true }));
 }
 
 export function buildExpenseBreakdown(transactions: Transaction[]): CategoryBreakdown[] {
@@ -87,6 +110,11 @@ export function buildIncomeVsExpense(transactions: Transaction[]): IncomeExpense
 export interface AllocationSlice {
   type: string;
   value: number;
+  isOther?: boolean;
+}
+
+export function groupSmallAllocations(data: AllocationSlice[]): AllocationSlice[] {
+  return groupSmallSlices(data, (d) => d.value, (value) => ({ type: 'Other', value, isOther: true }));
 }
 
 export function buildInvestmentAllocation(investments: Investment[]): AllocationSlice[] {
@@ -95,8 +123,7 @@ export function buildInvestmentAllocation(investments: Investment[]): Allocation
     const value = Number(inv.currentValue) > 0 ? Number(inv.currentValue) : Number(inv.amount);
     byType.set(inv.type, (byType.get(inv.type) ?? 0) + value);
   }
-  return Array.from(byType.entries()).map(([type, value]) => ({
-    type,
-    value: Math.round(value * 100) / 100,
-  }));
+  return Array.from(byType.entries())
+    .map(([type, value]) => ({ type, value: Math.round(value * 100) / 100 }))
+    .sort((a, b) => b.value - a.value);
 }

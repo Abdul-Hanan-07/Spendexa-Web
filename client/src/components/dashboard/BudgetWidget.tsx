@@ -12,7 +12,7 @@ export function BudgetWidget({
 }) {
   if (!budget) {
     return (
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+      <div className="card card-lift p-5">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-2">Budget</h3>
         <EmptyState
           icon={Wallet}
@@ -31,7 +31,7 @@ export function BudgetWidget({
   const pctSpent = start > 0 ? Math.min(Math.max((spent / start) * 100, 0), 100) : 0;
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card card-lift p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">Budget · {budget.name}</h3>
         {budget.isNearLimit && (

@@ -28,7 +28,7 @@ export function NetWorthChart({
   const hasMovement = data.some((p) => p.balance !== data[0]?.balance);
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5">
+    <div className="card card-lift p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">Balance trend</h3>
@@ -84,7 +84,8 @@ export function NetWorthChart({
               stroke={accentLine}
               strokeWidth={2}
               dot={false}
-              isAnimationActive={false}
+              animationDuration={600}
+              animationEasing="ease-out"
             />
           </LineChart>
         </ResponsiveContainer>

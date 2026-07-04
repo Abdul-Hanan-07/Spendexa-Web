@@ -48,7 +48,7 @@ export function UpdateGoalProgressModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-sm bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6">
+      <div className="relative w-full max-w-sm card p-6">
         <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-700 dark:text-amber-500 mb-4">
           <TrendingUp size={18} />
         </div>
