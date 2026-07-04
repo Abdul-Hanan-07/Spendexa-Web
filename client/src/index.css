@@ -19,11 +19,35 @@ body {
 }
 
 .card {
-  @apply bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-sm shadow-slate-900/5 dark:shadow-black/25 transition-all duration-200;
+  @apply bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl transition-all duration-200;
+  /* Light mode: a normal soft gray shadow reads fine against the light page. */
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
-.card-lift {
-  @apply hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10 dark:hover:shadow-black/45;
+/* Dark mode: a plain black shadow is invisible on a near-black page, so use a
+   warm amber-tinted glow for elevation plus a faint top-edge highlight so the
+   card reads as physically raised rather than flat. */
+.dark .card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 24px -6px rgba(245, 158, 11, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.06),
+    0 8px 20px rgba(15, 23, 42, 0.1);
+}
+
+.dark .card-lift:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 8px 32px -4px rgba(245, 158, 11, 0.18),
+    0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
 @keyframes fade-in-up {

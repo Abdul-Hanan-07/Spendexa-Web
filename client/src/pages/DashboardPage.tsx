@@ -1,4 +1,5 @@
 import { Landmark, Target, TrendingUp, Wallet } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { AppLayout } from '../components/layout/AppLayout';
 import { SummaryCard } from '../components/dashboard/SummaryCard';
 import { NetWorthChart } from '../components/dashboard/NetWorthChart';
@@ -49,7 +50,12 @@ export function DashboardPage() {
     <AppLayout>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Summary cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+          initial="hidden"
+          animate="show"
+          variants={{ show: { transition: { staggerChildren: 0.05 } } }}
+        >
           <SummaryCard
             label="Current Balance"
             value={currentBalance}
@@ -73,7 +79,7 @@ export function DashboardPage() {
             subtext={`${activeLoanCount} active loan${activeLoanCount === 1 ? '' : 's'}`}
           />
           <SummaryCard label="Active Goals" value={summary.goalCount} icon={Target} />
-        </div>
+        </motion.div>
 
         {/* Balance trend */}
         <NetWorthChart transactions={transactions} currentBalance={currentBalance} currency={currency} />
