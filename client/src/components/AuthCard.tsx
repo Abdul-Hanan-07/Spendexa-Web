@@ -33,9 +33,7 @@ export function AuthCard({
 
         <div className="relative z-10 animate-[fade-in-scale_500ms_ease-out]">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold shadow-lg shadow-amber-600/30">
-              S
-            </div>
+            <img src="/logo-tile.svg" alt="Spendexa" className="w-10 h-10 rounded-xl shadow-lg shadow-amber-600/30" />
             <span className="text-xl font-semibold text-slate-900 dark:text-zinc-100">Spendexa</span>
           </div>
         </div>
@@ -73,9 +71,7 @@ export function AuthCard({
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="flex md:hidden items-center justify-center gap-2 mb-8 animate-[fade-in-scale_400ms_ease-out]">
-            <div className="w-8 h-8 rounded-lg bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-sm">
-              S
-            </div>
+            <img src="/logo-tile.svg" alt="Spendexa" className="w-8 h-8 rounded-lg" />
             <span className="text-lg font-semibold text-slate-900 dark:text-zinc-100">Spendexa</span>
           </div>
 

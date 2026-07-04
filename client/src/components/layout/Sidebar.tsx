@@ -21,9 +21,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-slate-200 dark:border-zinc-800 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-600 dark:bg-amber-500 flex items-center justify-center text-white font-bold text-sm">
-              S
-            </div>
+            <img src="/logo-tile.svg" alt="Spendexa" className="w-7 h-7 rounded-lg" />
             <span className="font-semibold text-slate-900 dark:text-zinc-100">Spendexa</span>
           </div>
           <button onClick={onClose} className="md:hidden text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200">
