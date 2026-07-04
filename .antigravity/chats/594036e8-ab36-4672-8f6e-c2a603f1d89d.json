@@ -1,0 +1,81 @@
+{
+  "sessionId": "594036e8-ab36-4672-8f6e-c2a603f1d89d",
+  "name": "Hello",
+  "createdAt": "2026-07-04T06:57:28.260Z",
+  "filename": "594036e8-ab36-4672-8f6e-c2a603f1d89d.json",
+  "geminiStarted": true,
+  "messages": [
+    {
+      "id": "3750c9aa-cf4f-494d-b1ea-cc3181361c49",
+      "role": "user",
+      "content": "What you can do?",
+      "status": "pending",
+      "model": "gemini-2.5-flash",
+      "client_type": "gemini-bridge",
+      "parent_message_id": null,
+      "created_at": "2026-07-04T06:57:36.142+00:00",
+      "sender": "ios",
+      "is_cancelled": false
+    },
+    {
+      "id": "84722f09-9c3e-4b52-97ab-e34b26b13317",
+      "role": "agent",
+      "content": "Warning: 'add-dir' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'dangerously-skip-permissions' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'print' is not in the list of known options, but still passed to Electron/Chromium.",
+      "status": "completed",
+      "model": "gemini-2.5-flash",
+      "client_type": "gemini-bridge",
+      "parent_message_id": "3750c9aa-cf4f-494d-b1ea-cc3181361c49",
+      "created_at": "2026-07-04T06:57:40.255Z",
+      "sender": "macOS",
+      "is_cancelled": false
+    },
+    {
+      "id": "091aa379-3a0f-487d-94be-83a78d86b54b",
+      "role": "user",
+      "content": "Can you change the remove the toggle from login page?",
+      "status": "pending",
+      "model": "gemini-2.5-flash",
+      "client_type": "gemini-bridge",
+      "parent_message_id": null,
+      "created_at": "2026-07-04T06:58:11.12+00:00",
+      "sender": "ios",
+      "is_cancelled": false
+    },
+    {
+      "id": "219d41a8-b0ef-4966-ba77-defeb460299e",
+      "role": "agent",
+      "content": "Warning: 'continue' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'add-dir' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'dangerously-skip-permissions' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'print' is not in the list of known options, but still passed to Electron/Chromium.",
+      "status": "completed",
+      "model": "gemini-2.5-flash",
+      "client_type": "gemini-bridge",
+      "parent_message_id": "091aa379-3a0f-487d-94be-83a78d86b54b",
+      "created_at": "2026-07-04T06:58:14.770Z",
+      "sender": "macOS",
+      "is_cancelled": false
+    },
+    {
+      "id": "2e19d18d-5899-48ad-9ae2-a0e41d5fc581",
+      "role": "user",
+      "content": "Generate a professional README for this project. Include:\n\n1. One-line description and 2–3 sentence overview\n2. Prerequisites and how to run (install, env vars, commands)\n3. Main features or modules (bullets)\n4. How to test and how to contribute (brief)\n5. License line if applicable\n\nUse the repo structure and tech stack you see; keep it accurate and scannable.",
+      "status": "pending",
+      "model": "gemini-2.5-flash",
+      "client_type": "gemini-bridge",
+      "parent_message_id": null,
+      "created_at": "2026-07-04T06:59:08.607+00:00",
+      "sender": "ios",
+      "is_cancelled": false
+    },
+    {
+      "id": "374d2105-2948-4049-89fb-d456553c45ae",
+      "role": "agent",
+      "content": "Warning: 'continue' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'add-dir' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'dangerously-skip-permissions' is not in the list of known options, but still passed to Electron/Chromium.\nWarning: 'print' is not in the list of known options, but still passed to Electron/Chromium.",
+      "status": "completed",
+      "model": "gemini-2.5-flash",
+      "client_type": "gemini-bridge",
+      "parent_message_id": "2e19d18d-5899-48ad-9ae2-a0e41d5fc581",
+      "created_at": "2026-07-04T06:59:12.339Z",
+      "sender": "macOS",
+      "is_cancelled": false
+    }
+  ]
+}

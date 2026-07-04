@@ -18,9 +18,9 @@ export function TransactionTable({
         const Icon = getCategoryIcon(tx.category);
         const isIncome = tx.type === 'INCOME';
         return (
-          <div key={tx.id} className="flex items-center justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+          <div key={tx.id} className="flex items-center justify-between gap-4 py-3.5 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer group">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-500 dark:text-zinc-400 shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-500 shrink-0 group-hover:scale-110 transition-transform">
                 <Icon size={16} />
               </div>
               <div className="min-w-0">
@@ -31,15 +31,15 @@ export function TransactionTable({
 
             <div className="flex items-center gap-3 sm:gap-4 shrink-0">
               <span
-                className={`hidden sm:inline-flex text-xs font-medium px-2 py-1 rounded-md ${
-                  isIncome ? 'bg-emerald-500/10 text-green-700 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                className={`hidden sm:inline-flex text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full ${
+                  isIncome ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400' : 'bg-rose-500/15 text-rose-700 dark:text-rose-400'
                 }`}
               >
                 {isIncome ? 'Income' : 'Expense'}
               </span>
               <span
-                className={`text-sm font-semibold w-20 sm:w-24 text-right ${
-                  isIncome ? 'text-green-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                className={`text-sm font-semibold w-24 text-right ${
+                  isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                 }`}
               >
                 {isIncome ? '+' : '-'}

@@ -19,7 +19,7 @@ export function NetWorthChart({
   const chrome = getChartChrome(theme);
   const accentLine = getAccentLine(theme);
   const accentText = getAccentText(theme);
-  const [range, setRange] = useState<30 | 90>(30);
+  const [range, setRange] = useState<7 | 30 | 90>(30);
   const data = useMemo(
     () => buildBalanceTrend(transactions, currentBalance, range),
     [transactions, currentBalance, range],
@@ -35,7 +35,7 @@ export function NetWorthChart({
           <p className="text-xs text-slate-500 dark:text-zinc-500">Running account balance</p>
         </div>
         <div className="flex items-center bg-slate-100 dark:bg-zinc-800 rounded-lg p-1 text-xs font-medium">
-          {([30, 90] as const).map((d) => (
+          {([7, 30, 90] as const).map((d) => (
             <button
               key={d}
               onClick={() => setRange(d)}

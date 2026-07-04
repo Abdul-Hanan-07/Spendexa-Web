@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import toast from 'react-hot-toast';
 import { api, type LoginInput, type RegisterInput, type User } from '../lib/api';
 
 interface AuthContextValue {
@@ -25,18 +26,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function login(input: LoginInput) {
-    const { user } = await api.login(input);
-    setUser(user);
+    try {
+      const { user } = await api.login(input);
+      setUser(user);
+      toast.success('Successfully logged in!');
+    } catch (error) {
+      toast.error('Login failed');
+      throw error;
+    }
   }
 
   async function register(input: RegisterInput) {
-    const { user } = await api.register(input);
-    setUser(user);
+    try {
+      const { user } = await api.register(input);
+      setUser(user);
+      toast.success('Account created successfully!');
+    } catch (error) {
+      toast.error('Registration failed');
+      throw error;
+    }
   }
 
   async function logout() {
-    await api.logout();
-    setUser(null);
+    try {
+      await api.logout();
+      setUser(null);
+      toast.success('Logged out successfully');
+    } catch (error) {
+      toast.error('Logout failed');
+      throw error;
+    }
   }
 
   return (

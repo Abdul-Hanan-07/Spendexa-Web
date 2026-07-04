@@ -45,10 +45,10 @@ export function InvestmentAllocationChart({
                 data={data}
                 dataKey="value"
                 nameKey="type"
-                innerRadius={52}
-                outerRadius={78}
-                paddingAngle={0}
-                cornerRadius={0}
+                innerRadius={40}
+                outerRadius={60}
+                paddingAngle={3}
+                cornerRadius={3}
                 animationBegin={0}
                 animationDuration={600}
                 animationEasing="ease-out"

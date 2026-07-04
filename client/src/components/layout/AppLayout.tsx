@@ -14,7 +14,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 min-w-0 flex flex-col">
         <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 min-h-0 md:overflow-y-auto px-4 md:px-8 py-6 md:py-8">
+        <main className="flex-1 min-h-0 md:overflow-y-auto relative transform-gpu px-4 md:px-8 py-6 md:py-8">
           <div className="animate-[fade-in-up_300ms_ease-out]">{children}</div>
         </main>
       </div>

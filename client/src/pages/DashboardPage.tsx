@@ -48,13 +48,16 @@ export function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-7xl mx-auto space-y-6">
+      <motion.div 
+        className="max-w-7xl mx-auto space-y-6"
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.1 } } }}
+      >
         {/* Summary cards */}
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
-          initial="hidden"
-          animate="show"
-          variants={{ show: { transition: { staggerChildren: 0.05 } } }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
         >
           <SummaryCard
             label="Current Balance"
@@ -82,10 +85,13 @@ export function DashboardPage() {
         </motion.div>
 
         {/* Balance trend */}
-        <NetWorthChart transactions={transactions} currentBalance={currentBalance} currency={currency} />
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+          <NetWorthChart transactions={transactions} currentBalance={currentBalance} currency={currency} />
+        </motion.div>
 
         {/* Expense breakdown + income vs expense + investment allocation */}
-        <div
+        <motion.div
+          variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
           className={`grid grid-cols-1 lg:grid-cols-2 gap-5 ${hasInvestments ? 'xl:grid-cols-3' : ''}`}
         >
           <ExpenseBreakdownChart transactions={transactions} currency={currency} />
@@ -93,17 +99,19 @@ export function DashboardPage() {
           {hasInvestments && (
             <InvestmentAllocationChart investments={investments} currency={currency} />
           )}
-        </div>
+        </motion.div>
 
         {/* Budget + Goals */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <BudgetWidget budget={summary.activeBudget} currency={currency} />
           <GoalsWidget goals={goals} currency={currency} />
-        </div>
+        </motion.div>
 
         {/* Recent transactions */}
-        <RecentTransactions transactions={recentTransactions} currency={currency} />
-      </div>
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+          <RecentTransactions transactions={recentTransactions} currency={currency} />
+        </motion.div>
+      </motion.div>
     </AppLayout>
   );
 }

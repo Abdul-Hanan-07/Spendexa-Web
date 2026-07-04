@@ -89,7 +89,7 @@ export function TransactionsPage() {
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">Transactions</h1>
             <p className="text-xs text-slate-500 dark:text-zinc-500 mt-0.5">Track and manage your income and expenses.</p>

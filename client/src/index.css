@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 html {
@@ -16,10 +16,17 @@ html.dark {
 
 body {
   @apply bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased transition-colors duration-150;
+  /* Background glow for light mode (slightly stronger to show up on white) */
+  background-image: radial-gradient(circle at top center, rgba(245, 158, 11, 0.08) 0%, transparent 60%);
+}
+
+.dark body {
+  /* Background glow for dark mode */
+  background-image: radial-gradient(circle at top center, rgba(245, 158, 11, 0.03) 0%, transparent 60%);
 }
 
 .card {
-  @apply bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl transition-all duration-200;
+  @apply bg-white/90 dark:bg-zinc-900/70 backdrop-blur-md border border-slate-200/80 dark:border-zinc-800/80 rounded-2xl transition-all duration-200;
   /* Light mode: a normal soft gray shadow reads fine against the light page. */
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
@@ -133,4 +140,44 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* slate-300 */
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* slate-400 */
+}
+
+/* Dark mode scrollbars */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #27272a; /* zinc-800 */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #3f3f46; /* zinc-700 */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark * {
+  scrollbar-color: #27272a transparent;
 }
