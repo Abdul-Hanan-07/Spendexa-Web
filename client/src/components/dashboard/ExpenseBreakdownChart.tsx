@@ -49,7 +49,8 @@ export function ExpenseBreakdownChart({
                   nameKey="category"
                   innerRadius={52}
                   outerRadius={78}
-                  paddingAngle={1}
+                  paddingAngle={0}
+                  cornerRadius={0}
                   animationBegin={0}
                   animationDuration={600}
                   animationEasing="ease-out"
