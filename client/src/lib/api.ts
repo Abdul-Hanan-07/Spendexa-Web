@@ -193,6 +193,52 @@ export interface UpdateGoalInput {
   deadline?: string;
 }
 
+export interface ReportRangeParams {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface ReportSummary {
+  currentBalance: string;
+  netWorth: string;
+  totalLoanDebt: string;
+  totalBudgetPlanned: string;
+  totalBudgetRemaining: string;
+  investmentPortfolioValue: string;
+  totalIncome: string;
+  totalExpense: string;
+  activeGoalCount: number;
+}
+
+export interface ReportInvestmentSample extends Investment {
+  gainLoss: string;
+  gainLossPercent: string;
+}
+
+export interface ReportLoanSample extends LoanWithRepayments {
+  label: string;
+}
+
+export interface ReportPreview {
+  period: string;
+  user: { name: string; email: string; currency: string };
+  summary: ReportSummary;
+  counts: {
+    transactions: number;
+    investments: number;
+    loans: number;
+    budgets: number;
+    goals: number;
+  };
+  samples: {
+    transactions: Transaction[];
+    investments: ReportInvestmentSample[];
+    loans: ReportLoanSample[];
+    budgets: Budget[];
+    goals: Goal[];
+  };
+}
+
 class ApiError extends Error {}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -220,6 +266,20 @@ function toQueryString(params: object): string {
   }
   const qs = search.toString();
   return qs ? `?${qs}` : '';
+}
+
+async function fetchBlob(path: string): Promise<{ blob: Blob; filename: string }> {
+  const res = await fetch(`${API_URL}${path}`, { credentials: 'include' });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new ApiError((data && data.error) || 'Something went wrong');
+  }
+
+  const disposition = res.headers.get('Content-Disposition') || '';
+  const filename = /filename="(.+?)"/.exec(disposition)?.[1] || 'spendexa-report';
+  const blob = await res.blob();
+  return { blob, filename };
 }
 
 export const api = {
@@ -304,4 +364,13 @@ export const api = {
     }),
   deactivateBudget: (id: string) =>
     request<{ budget: Budget }>(`/api/budgets/${id}/deactivate`, { method: 'PATCH' }),
+
+  getReportPreview: (params: ReportRangeParams = {}) =>
+    request<ReportPreview>(`/api/reports/preview${toQueryString(params)}`),
+  downloadExcelReport: (params: ReportRangeParams = {}) =>
+    fetchBlob(`/api/reports/export/excel${toQueryString(params)}`),
+  viewPdfReport: (params: ReportRangeParams = {}) =>
+    fetchBlob(`/api/reports/export/pdf${toQueryString({ ...params, mode: 'inline' })}`),
+  downloadPdfReport: (params: ReportRangeParams = {}) =>
+    fetchBlob(`/api/reports/export/pdf${toQueryString({ ...params, mode: 'download' })}`),
 };

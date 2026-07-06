@@ -8,11 +8,13 @@ export function Modal({
   onClose,
   title,
   children,
+  widthClassName = 'max-w-md',
 }: {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  widthClassName?: string;
 }) {
   const [mounted, setMounted] = useState(false);
 
@@ -46,7 +48,7 @@ export function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
-            className="relative w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden"
+            className={`relative w-full ${widthClassName} bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-xl overflow-hidden`}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-zinc-800">
               <h2 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">{title}</h2>
@@ -57,7 +59,7 @@ export function Modal({
                 <X size={20} />
               </button>
             </div>
-            <div className="p-6">{children}</div>
+            <div className="p-6 max-h-[75vh] overflow-y-auto">{children}</div>
           </motion.div>
         </div>
       )}

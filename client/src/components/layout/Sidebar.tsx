@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ArrowLeftRight, TrendingUp, Landmark, Wallet, Target, X, Info } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, TrendingUp, Landmark, Wallet, Target, FileBarChart, X, Info } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/loans', label: 'Loans', icon: Landmark },
   { to: '/budgets', label: 'Budgets', icon: Wallet },
   { to: '/goals', label: 'Goals', icon: Target },
+  { to: '/reports', label: 'Reports', icon: FileBarChart },
   { to: '/about', label: 'About', icon: Info },
 ];
 

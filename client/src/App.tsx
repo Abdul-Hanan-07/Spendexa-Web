@@ -11,6 +11,7 @@ import { InvestmentsPage } from './pages/InvestmentsPage';
 import { LoansPage } from './pages/LoansPage';
 import { BudgetsPage } from './pages/BudgetsPage';
 import { GoalsPage } from './pages/GoalsPage';
+import { ReportsPage } from './pages/ReportsPage';
 import { AboutPage } from './pages/AboutPage';
 
 function CatchAll() {
@@ -35,6 +36,7 @@ function AppRoutes() {
         <Route path="/loans" element={<LoansPage />} />
         <Route path="/budgets" element={<BudgetsPage />} />
         <Route path="/goals" element={<GoalsPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
         <Route path="/about" element={<AboutPage />} />
       </Route>
       <Route path="*" element={<CatchAll />} />
