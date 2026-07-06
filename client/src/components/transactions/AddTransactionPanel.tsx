@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { api } from '../../lib/api';
 import type { Transaction, TransactionType } from '../../lib/api';
 
@@ -63,13 +64,21 @@ export function AddTransactionPanel({
 
     setSubmitting(true);
     try {
-      const { transaction } = await api.createTransaction({
+      const response = await api.createTransaction({
         amount: parsedAmount,
         type,
         category,
         date: new Date(`${date}T00:00:00`).toISOString(),
       });
-      onCreated(transaction);
+      
+      if (response.budget?.isNearLimit) {
+        toast.error(`Warning: You are nearing your budget limit for ${response.budget.name}!`, {
+          duration: 5000,
+          icon: '🚨',
+        });
+      }
+
+      onCreated(response.transaction);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add transaction');
     } finally {

@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { AUTH_COOKIE_NAME, AUTH_COOKIE_OPTIONS, signAuthToken } from '../lib/jwt';
-import { loginSchema, registerSchema } from '../schemas/auth';
+import { loginSchema, registerSchema, updatePasswordSchema, updateProfileSchema } from '../schemas/auth';
 import { requireAuth } from '../middleware/auth';
 import { authLimiter } from '../middleware/rateLimit';
 
@@ -106,4 +106,61 @@ router.get('/me', requireAuth, async (req, res) => {
   return res.json({ user: sanitizeUser(user) });
 });
 
+router.put('/profile', requireAuth, async (req, res) => {
+  const parsed = updateProfileSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' });
+  }
+
+  const { name, email } = parsed.data;
+
+  try {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing && existing.id !== req.userId) {
+      return res.status(409).json({ error: 'Email already in use' });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: req.userId },
+      data: { name, email },
+    });
+
+    return res.json({ user: sanitizeUser(updatedUser) });
+  } catch (err) {
+    console.error('Update profile error:', err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+router.put('/password', requireAuth, async (req, res) => {
+  const parsed = updatePasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' });
+  }
+
+  const { currentPassword, newPassword } = parsed.data;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Incorrect current password' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await prisma.user.update({
+      where: { id: req.userId },
+      data: { passwordHash },
+    });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Update password error:', err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+});
 export default router;

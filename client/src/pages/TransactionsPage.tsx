@@ -17,6 +17,7 @@ function toApiFilters(filters: TransactionFilterState) {
   return {
     type: filters.type === 'ALL' ? undefined : filters.type,
     category: filters.category || undefined,
+    search: filters.search || undefined,
     startDate: filters.startDate ? new Date(`${filters.startDate}T00:00:00`).toISOString() : undefined,
     endDate: filters.endDate ? new Date(`${filters.endDate}T23:59:59`).toISOString() : undefined,
   };
@@ -39,7 +40,7 @@ export function TransactionsPage() {
   );
 
   const hasActiveFilters =
-    filters.type !== 'ALL' || filters.category !== '' || filters.startDate !== '' || filters.endDate !== '';
+    filters.type !== 'ALL' || filters.category !== '' || filters.search !== '' || filters.startDate !== '' || filters.endDate !== '';
 
   useEffect(() => {
     loadCategories();

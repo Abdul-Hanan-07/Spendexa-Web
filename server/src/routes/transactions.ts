@@ -73,7 +73,7 @@ router.get('/', requireAuth, async (req, res) => {
     return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid query' });
   }
 
-  const { type, category, startDate, endDate, limit, offset } = parsed.data;
+  const { type, category, search, startDate, endDate, limit, offset } = parsed.data;
 
   const account = await getDefaultAccount(req.userId!);
   if (!account) {
@@ -84,6 +84,7 @@ router.get('/', requireAuth, async (req, res) => {
     accountId: account.id,
     ...(type ? { type } : {}),
     ...(category ? { category } : {}),
+    ...(search ? { category: { contains: search, mode: 'insensitive' } } : {}),
     ...(startDate || endDate
       ? {
           date: {
@@ -140,14 +141,35 @@ router.delete('/:id', requireAuth, async (req, res) => {
         },
       });
 
-      return { transaction, currentBalance: updatedAccount.currentBalance };
+      let budget = null;
+      if (transaction.type === 'EXPENSE') {
+        const activeBudget = await tx.budget.findFirst({
+          where: { accountId: transaction.accountId, active: true },
+        });
+
+        if (activeBudget && isBudgetWithinPeriod(activeBudget, transaction.date)) {
+          budget = await tx.budget.update({
+            where: { id: activeBudget.id },
+            data: {
+              remainingAmount: { increment: transaction.amount },
+              spentAmount: { decrement: transaction.amount },
+            },
+          });
+        }
+      }
+
+      return {
+        transaction,
+        currentBalance: updatedAccount.currentBalance,
+        budget: budget ? buildBudgetPayload(budget) : null,
+      };
     });
 
     if (!result) {
       return res.status(404).json({ error: 'Transaction not found' });
     }
 
-    return res.json({ success: true, currentBalance: result.currentBalance });
+    return res.json({ success: true, currentBalance: result.currentBalance, budget: result.budget });
   } catch (err) {
     console.error('Delete transaction error:', err);
     return res.status(500).json({ error: 'Something went wrong' });

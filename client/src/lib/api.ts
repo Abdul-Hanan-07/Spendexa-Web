@@ -22,6 +22,16 @@ export interface LoginInput {
   password: string;
 }
 
+export interface UpdatePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface UpdateProfileInput {
+  name: string;
+  email: string;
+}
+
 export type TransactionType = 'INCOME' | 'EXPENSE';
 
 export interface Transaction {
@@ -124,6 +134,7 @@ export interface DashboardSummary {
 export interface ListTransactionsParams {
   type?: TransactionType;
   category?: string;
+  search?: string;
   startDate?: string;
   endDate?: string;
   limit?: number;
@@ -224,6 +235,14 @@ export const api = {
     }),
   logout: () => request<{ success: boolean }>('/api/auth/logout', { method: 'POST' }),
   me: () => request<{ user: User }>('/api/auth/me'),
+  updatePassword: (input: UpdatePasswordInput) => request<{ success: boolean }>('/api/auth/password', {
+    method: 'PUT',
+    body: JSON.stringify(input),
+  }),
+  updateProfile: (input: UpdateProfileInput) => request<{ user: User }>('/api/auth/profile', {
+    method: 'PUT',
+    body: JSON.stringify(input),
+  }),
 
   getDashboard: () => request<DashboardSummary>('/api/dashboard'),
 

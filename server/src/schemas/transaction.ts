@@ -12,6 +12,7 @@ export const createTransactionSchema = z.object({
 export const listTransactionsQuerySchema = z.object({
   type: transactionTypeSchema.optional(),
   category: z.string().trim().min(1).optional(),
+  search: z.string().trim().optional(),
   startDate: z.coerce.date('Invalid startDate').optional(),
   endDate: z.coerce.date('Invalid endDate').optional(),
   limit: z.coerce.number().int().positive().max(100).default(50),

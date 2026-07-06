@@ -104,7 +104,8 @@ router.patch('/:id', requireAuth, async (req, res) => {
         return null;
       }
 
-      const diff = new Prisma.Decimal(currentValue).minus(investment.currentValue);
+      const previousContribution = contributionOf(investment);
+      const diff = new Prisma.Decimal(currentValue).minus(previousContribution);
 
       const updatedInvestment = await tx.investment.update({
         where: { id },

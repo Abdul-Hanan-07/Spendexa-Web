@@ -23,7 +23,7 @@ export function BudgetCard({
   const progress = total > 0 ? (spent / total) * 100 : 0;
 
   return (
-    <div className="card card-lift overflow-hidden">
+    <div className={`card card-lift overflow-hidden transition-all duration-300 ${budget.isNearLimit ? 'ring-1 ring-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.15)] dark:shadow-[0_0_20px_rgba(239,68,68,0.1)]' : ''}`}>
       <div
         role="button"
         tabIndex={0}
@@ -41,8 +41,8 @@ export function BudgetCard({
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">{budget.name}</h3>
               {budget.isNearLimit && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-yellow-500/10 text-yellow-700 dark:text-yellow-500">
-                  Near limit
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 animate-pulse">
+                  Near limit!
                 </span>
               )}
             </div>
@@ -67,7 +67,7 @@ export function BudgetCard({
           </div>
           <div className="w-full h-2 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
             <div
-              className={`h-full ${getBudgetProgressColor(budget.isNearLimit)} transition-all`}
+              className={`h-full transition-all duration-500 ease-out ${budget.isNearLimit ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : getBudgetProgressColor(budget.isNearLimit)}`}
               style={{ width: `${Math.min(progress, 100)}%` }}
             />
           </div>

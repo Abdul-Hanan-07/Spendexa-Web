@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Landmark, Target, TrendingUp, Wallet } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AppLayout } from '../components/layout/AppLayout';
@@ -9,14 +10,33 @@ import { InvestmentAllocationChart } from '../components/dashboard/InvestmentAll
 import { BudgetWidget } from '../components/dashboard/BudgetWidget';
 import { GoalsWidget } from '../components/dashboard/GoalsWidget';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';
+import { WelcomeWizardModal } from '../components/modals/WelcomeWizardModal';
 import { useAuth } from '../context/AuthContext';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { formatCurrency } from '../lib/format';
 
 export function DashboardPage() {
   const { user } = useAuth();
-  const { data, loading, error } = useDashboardData();
+  const { data, loading, error, refresh } = useDashboardData();
   const currency = user?.currency ?? 'PKR';
+
+  const [showWizard, setShowWizard] = useState(false);
+
+  useEffect(() => {
+    if (data && !loading) {
+      const isNew = data.summary.recentTransactions.length === 0 && Number(data.summary.currentBalance) === 0;
+      const hasSeen = localStorage.getItem('wizard_completed');
+      if (isNew && !hasSeen) {
+        setShowWizard(true);
+      }
+    }
+  }, [data, loading]);
+
+  const handleWizardComplete = () => {
+    localStorage.setItem('wizard_completed', 'true');
+    setShowWizard(false);
+    refresh();
+  };
 
   if (loading) {
     return (
@@ -112,6 +132,12 @@ export function DashboardPage() {
           <RecentTransactions transactions={recentTransactions} currency={currency} />
         </motion.div>
       </motion.div>
+
+      <WelcomeWizardModal 
+        isOpen={showWizard} 
+        onClose={() => setShowWizard(false)} 
+        onComplete={handleWizardComplete} 
+      />
     </AppLayout>
   );
 }

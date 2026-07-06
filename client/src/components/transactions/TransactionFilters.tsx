@@ -3,6 +3,7 @@ import type { TransactionType } from '../../lib/api';
 export interface TransactionFilterState {
   type: TransactionType | 'ALL';
   category: string;
+  search: string;
   startDate: string;
   endDate: string;
 }
@@ -10,6 +11,7 @@ export interface TransactionFilterState {
 export const EMPTY_FILTERS: TransactionFilterState = {
   type: 'ALL',
   category: '',
+  search: '',
   startDate: '',
   endDate: '',
 };
@@ -29,11 +31,21 @@ export function TransactionFilters({
   onClear: () => void;
 }) {
   const hasActiveFilters =
-    filters.type !== 'ALL' || filters.category !== '' || filters.startDate !== '' || filters.endDate !== '';
+    filters.type !== 'ALL' || filters.category !== '' || filters.search !== '' || filters.startDate !== '' || filters.endDate !== '';
 
   return (
     <div className="card p-5">
       <div className="flex flex-wrap items-end gap-4">
+        <div className="flex-grow min-w-[12rem]">
+          <label className="text-xs font-medium text-slate-500 dark:text-zinc-400 mb-1.5 block">Search</label>
+          <input
+            type="text"
+            placeholder="Search categories..."
+            value={filters.search}
+            onChange={(e) => onChange({ ...filters, search: e.target.value })}
+            className={`w-full ${selectClass}`}
+          />
+        </div>
         <div>
           <label className="text-xs font-medium text-slate-500 dark:text-zinc-400 mb-1.5 block">Type</label>
           <select

@@ -13,7 +13,7 @@ export function AboutPage() {
           </p>
         </div>
 
-        <div className="card p-6 space-y-3">
+        <div className="card card-lift p-6 space-y-3">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
             <Info className="text-amber-500" size={20} />
             Why do you need this?
@@ -46,7 +46,7 @@ export function AboutPage() {
           />
         </div>
 
-        <div className="card p-6 border-l-4 border-l-amber-500 mt-8">
+        <div className="card card-lift p-6 border-l-4 border-l-amber-500 mt-8">
           <h2 className="text-base font-semibold text-slate-900 dark:text-zinc-100 flex items-center gap-2 mb-2">
             <Shield className="text-amber-500" size={18} />
             Privacy & Security
@@ -62,8 +62,8 @@ export function AboutPage() {
 
 function FeatureCard({ icon: Icon, title, desc }: { icon: LucideIcon, title: string, desc: string }) {
   return (
-    <div className="card p-5 hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors">
-      <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-500 mb-4">
+    <div className="card card-lift p-5 hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors group">
+      <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-500 mb-4 group-hover:scale-110 transition-transform">
         <Icon size={20} />
       </div>
       <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100 mb-1">{title}</h3>
