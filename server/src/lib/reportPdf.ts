@@ -73,15 +73,30 @@ const STYLES = `
   .header img { width: 44px; height: 44px; }
   .header h1 { font-size: 20px; margin: 0; color: #1c1917; }
   .header .meta { font-size: 11px; color: #57534e; margin-top: 4px; }
-  .report-section { page-break-after: always; }
-  .report-section:last-child { page-break-after: auto; }
+  .cover-page { page-break-after: always; break-after: page; }
+  .report-section {
+    margin-top: 10px;
+    padding-top: 18px;
+    border-top: 1px solid #e7e5e4;
+  }
   h2.section-title {
     font-size: 15px;
     color: #b45309;
     border-left: 4px solid #f59e0b;
     padding-left: 10px;
     margin: 0 0 14px 0;
+    break-after: avoid-page;
+    page-break-after: avoid;
   }
+  h3.subsection-title {
+    font-size: 12px;
+    color: #7c2d12;
+    margin: 16px 0 8px;
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
   .card-grid { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
   .stat-card {
     flex: 1 1 21%;
@@ -92,14 +107,14 @@ const STYLES = `
   }
   .stat-card .label { font-size: 10px; color: #78716c; text-transform: uppercase; letter-spacing: 0.04em; }
   .stat-card .value { font-size: 17px; font-weight: 700; color: #1c1917; margin-top: 4px; }
-  .income-expense { display: flex; gap: 24px; margin-bottom: 20px; }
+  .income-expense { display: flex; gap: 24px; margin-bottom: 20px; break-inside: avoid; page-break-inside: avoid; }
   .ie-bar-wrap { flex: 1; }
   .ie-bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
   .ie-bar-track { background: #f3f4f6; border-radius: 6px; height: 10px; overflow: hidden; }
   .ie-bar-fill { height: 100%; }
   .ie-bar-fill.income { background: #16a34a; }
   .ie-bar-fill.expense { background: #dc2626; }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 18px; break-inside: auto; }
   th, td { text-align: left; padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #e7e5e4; }
   th { background: #fdf3e0; color: #7c2d12; font-weight: 700; }
   tbody tr:nth-child(even) { background: #fafaf9; }
@@ -111,12 +126,11 @@ const STYLES = `
   .badge.loss { color: #b91c1c; }
   .progress-track { background: #f3f4f6; border-radius: 6px; height: 8px; width: 100px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 6px; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, #14b8a6, #10b981); }
-  .empty-note { color: #78716c; font-style: italic; font-size: 11px; margin-bottom: 16px; }
 `;
 
 function summarySectionHtml(data: ReportData, currency: string): string {
   return `
-    <div class="report-section">
+    <div class="cover-page">
       <h2 class="section-title">Summary</h2>
       <div class="card-grid">
         <div class="stat-card"><div class="label">Current Balance</div><div class="value">${money(data.summary.currentBalance, currency)}</div></div>
@@ -155,6 +169,8 @@ function incomeExpenseSectionHtml(data: ReportData, currency: string): string {
 }
 
 function transactionsSectionHtml(data: ReportData, currency: string): string {
+  if (data.transactions.length === 0) return '';
+
   const rows = data.transactions
     .map(
       (tx) => `
@@ -170,16 +186,14 @@ function transactionsSectionHtml(data: ReportData, currency: string): string {
   return `
     <div class="report-section">
       <h2 class="section-title">Transactions (${data.transactions.length})</h2>
-      ${
-        data.transactions.length === 0
-          ? '<p class="empty-note">No transactions in this period.</p>'
-          : `<table><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th></tr></thead><tbody>${rows}</tbody></table>`
-      }
+      <table><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Amount</th></tr></thead><tbody>${rows}</tbody></table>
     </div>
   `;
 }
 
 function investmentsSectionHtml(data: ReportData, currency: string): string {
+  if (data.investments.length === 0) return '';
+
   const rows = data.investments
     .map((inv) => {
       const gainClass = toNum(inv.gainLoss) >= 0 ? 'gain' : 'loss';
@@ -198,16 +212,14 @@ function investmentsSectionHtml(data: ReportData, currency: string): string {
   return `
     <div class="report-section">
       <h2 class="section-title">Investments (${data.investments.length})</h2>
-      ${
-        data.investments.length === 0
-          ? '<p class="empty-note">No investments recorded.</p>'
-          : `<table><thead><tr><th>Type</th><th>Asset</th><th>Purchase Date</th><th>Invested</th><th>Current Value</th><th>Gain/Loss</th></tr></thead><tbody>${rows}</tbody></table>`
-      }
+      <table><thead><tr><th>Type</th><th>Asset</th><th>Purchase Date</th><th>Invested</th><th>Current Value</th><th>Gain/Loss</th></tr></thead><tbody>${rows}</tbody></table>
     </div>
   `;
 }
 
 function loansSectionHtml(data: ReportData, currency: string): string {
+  if (data.loans.length === 0) return '';
+
   const loanRows = data.loans
     .map(
       (loan) => `
@@ -238,22 +250,20 @@ function loansSectionHtml(data: ReportData, currency: string): string {
   return `
     <div class="report-section">
       <h2 class="section-title">Loans (${data.loans.length})</h2>
+      <table><thead><tr><th>Loan</th><th>Principal</th><th>Interest Rate</th><th>Remaining</th><th>Status</th><th>Start Date</th><th>End Date</th></tr></thead><tbody>${loanRows}</tbody></table>
       ${
-        data.loans.length === 0
-          ? '<p class="empty-note">No loans recorded.</p>'
-          : `<table><thead><tr><th>Loan</th><th>Principal</th><th>Interest Rate</th><th>Remaining</th><th>Status</th><th>Start Date</th><th>End Date</th></tr></thead><tbody>${loanRows}</tbody></table>
-             <h3 style="font-size:12px;color:#7c2d12;margin:12px 0 8px;">Repayment History</h3>
-             ${
-               repaymentRows
-                 ? `<table><thead><tr><th>Loan</th><th>Amount</th><th>Date</th></tr></thead><tbody>${repaymentRows}</tbody></table>`
-                 : '<p class="empty-note">No repayments recorded.</p>'
-             }`
+        repaymentRows
+          ? `<h3 class="subsection-title">Repayment History</h3>
+             <table><thead><tr><th>Loan</th><th>Amount</th><th>Date</th></tr></thead><tbody>${repaymentRows}</tbody></table>`
+          : ''
       }
     </div>
   `;
 }
 
 function budgetsSectionHtml(data: ReportData, currency: string): string {
+  if (data.budgets.length === 0) return '';
+
   const rows = data.budgets
     .map(
       (budget) => `
@@ -271,16 +281,14 @@ function budgetsSectionHtml(data: ReportData, currency: string): string {
   return `
     <div class="report-section">
       <h2 class="section-title">Budget Status (${data.budgets.length})</h2>
-      ${
-        data.budgets.length === 0
-          ? '<p class="empty-note">No budgets recorded.</p>'
-          : `<table><thead><tr><th>Name</th><th>Planned</th><th>Remaining</th><th>Spent</th><th>Period</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`
-      }
+      <table><thead><tr><th>Name</th><th>Planned</th><th>Remaining</th><th>Spent</th><th>Period</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
     </div>
   `;
 }
 
 function goalsSectionHtml(data: ReportData, currency: string): string {
+  if (data.goals.length === 0) return '';
+
   const rows = data.goals
     .map(
       (goal) => `
@@ -297,11 +305,7 @@ function goalsSectionHtml(data: ReportData, currency: string): string {
   return `
     <div class="report-section">
       <h2 class="section-title">Goals Progress (${data.goals.length})</h2>
-      ${
-        data.goals.length === 0
-          ? '<p class="empty-note">No goals recorded.</p>'
-          : `<table><thead><tr><th>Name</th><th>Target</th><th>Current</th><th>Progress</th><th>Deadline</th></tr></thead><tbody>${rows}</tbody></table>`
-      }
+      <table><thead><tr><th>Name</th><th>Target</th><th>Current</th><th>Progress</th><th>Deadline</th></tr></thead><tbody>${rows}</tbody></table>
     </div>
   `;
 }
