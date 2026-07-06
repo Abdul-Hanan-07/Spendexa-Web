@@ -106,7 +106,7 @@ router.get('/me', requireAuth, async (req, res) => {
   return res.json({ user: sanitizeUser(user) });
 });
 
-router.put('/profile', requireAuth, async (req, res) => {
+router.put('/profile', authLimiter, requireAuth, async (req, res) => {
   const parsed = updateProfileSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' });
@@ -132,7 +132,7 @@ router.put('/profile', requireAuth, async (req, res) => {
   }
 });
 
-router.put('/password', requireAuth, async (req, res) => {
+router.put('/password', authLimiter, requireAuth, async (req, res) => {
   const parsed = updatePasswordSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message ?? 'Invalid input' });

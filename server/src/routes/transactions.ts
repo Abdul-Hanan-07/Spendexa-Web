@@ -42,7 +42,7 @@ router.post('/', requireAuth, async (req, res) => {
           where: { accountId: account.id, active: true },
         });
 
-        if (activeBudget && isBudgetWithinPeriod(activeBudget)) {
+        if (activeBudget && isBudgetWithinPeriod(activeBudget, date)) {
           budget = await tx.budget.update({
             where: { id: activeBudget.id },
             data: {
@@ -80,11 +80,18 @@ router.get('/', requireAuth, async (req, res) => {
     return res.status(404).json({ error: 'No account found' });
   }
 
+  const categoryFilter: Prisma.StringFilter | undefined =
+    category || search
+      ? {
+          ...(category ? { equals: category } : {}),
+          ...(search ? { contains: search, mode: 'insensitive' } : {}),
+        }
+      : undefined;
+
   const where: Prisma.TransactionWhereInput = {
     accountId: account.id,
     ...(type ? { type } : {}),
-    ...(category ? { category } : {}),
-    ...(search ? { category: { contains: search, mode: 'insensitive' } } : {}),
+    ...(categoryFilter ? { category: categoryFilter } : {}),
     ...(startDate || endDate
       ? {
           date: {
