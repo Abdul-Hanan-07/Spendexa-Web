@@ -10,6 +10,7 @@ import investmentsRouter from './routes/investments';
 import loansRouter from './routes/loans';
 import budgetsRouter from './routes/budgets';
 import goalsRouter from './routes/goals';
+import reportsRouter from './routes/reports';
 import { generalApiLimiter } from './middleware/rateLimit';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -42,6 +43,7 @@ app.use('/api/investments', investmentsRouter);
 app.use('/api/loans', loansRouter);
 app.use('/api/budgets', budgetsRouter);
 app.use('/api/goals', goalsRouter);
+app.use('/api/reports', reportsRouter);
 
 app.use(errorHandler);
 
