@@ -80,6 +80,7 @@ model Investment {
   units        Decimal  @default(0) @db.Decimal(14, 4)
   currentValue Decimal  @default(0) @db.Decimal(14, 2)
   purchaseDate DateTime
+  priceUpdatedAt DateTime?
   createdAt    DateTime @default(now())
 
   @@index([accountId])
