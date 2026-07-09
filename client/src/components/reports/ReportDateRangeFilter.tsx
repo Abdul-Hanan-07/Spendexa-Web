@@ -51,7 +51,7 @@ export function ReportDateRangeFilter({
                 key={preset.label}
                 type="button"
                 onClick={() => onChange(preset.range)}
-                className={`text-xs font-medium px-3 py-2 rounded-lg transition-colors ${
+                className={`inline-flex items-center justify-center text-xs font-medium px-3 min-h-11 rounded-lg transition-colors ${
                   isActivePreset(preset.range)
                     ? 'bg-amber-500/10 text-amber-700 dark:text-amber-500'
                     : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800/60'

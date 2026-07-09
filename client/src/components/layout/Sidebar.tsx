@@ -26,7 +26,11 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
             <img src="/logo-tile.svg" alt="Spendexa" className="w-7 h-7 rounded-lg" />
             <span className="font-semibold text-slate-900 dark:text-zinc-100">Spendexa</span>
           </div>
-          <button onClick={onClose} className="md:hidden text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200">
+          <button
+            onClick={onClose}
+            aria-label="Close navigation menu"
+            className="md:hidden -mr-2.5 w-11 h-11 flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/60 rounded-lg transition-colors"
+          >
             <X size={20} />
           </button>
         </div>

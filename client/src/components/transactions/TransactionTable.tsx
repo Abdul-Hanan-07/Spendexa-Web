@@ -49,7 +49,7 @@ export function TransactionTable({
                 type="button"
                 onClick={() => onDelete(tx)}
                 aria-label={`Delete transaction: ${tx.category}`}
-                className="text-slate-400 dark:text-zinc-600 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+                className="w-11 h-11 shrink-0 flex items-center justify-center text-slate-400 dark:text-zinc-600 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
               >
                 <Trash2 size={15} />
               </button>

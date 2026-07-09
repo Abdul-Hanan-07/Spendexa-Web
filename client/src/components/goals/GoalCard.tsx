@@ -27,11 +27,11 @@ export function GoalCard({
           <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">{goal.name}</h3>
           <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">{formatTimeRemaining(goal.deadline)}</p>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-0.5 shrink-0">
           <button
             type="button"
             onClick={onUpdateProgress}
-            className="text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1"
+            className="inline-flex items-center justify-center gap-1 min-h-11 text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 rounded-lg transition-colors"
           >
             <TrendingUp size={13} />
             Update
@@ -39,14 +39,14 @@ export function GoalCard({
           <button
             type="button"
             onClick={onEdit}
-            className="text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800/60 transition-colors"
+            className="w-11 h-11 flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800/60 transition-colors"
           >
             <Pencil size={15} />
           </button>
           <button
             type="button"
             onClick={onDelete}
-            className="text-slate-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+            className="w-11 h-11 flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
           >
             <Trash2 size={15} />
           </button>

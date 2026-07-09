@@ -39,7 +39,7 @@ export function NetWorthChart({
             <button
               key={d}
               onClick={() => setRange(d)}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
+              className={`px-2.5 py-2 rounded-md transition-colors ${
                 range === d ? 'bg-amber-600 dark:bg-amber-500 text-white' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200'
               }`}
             >

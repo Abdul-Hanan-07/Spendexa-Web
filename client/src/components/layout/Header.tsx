@@ -37,7 +37,11 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 md:px-8 h-16 border-b border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur">
       <div className="flex items-center gap-3 min-w-0">
-        <button onClick={onMenuClick} className="md:hidden text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 shrink-0">
+        <button
+          onClick={onMenuClick}
+          aria-label="Open navigation menu"
+          className="md:hidden -ml-2.5 w-11 h-11 flex items-center justify-center text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800/60 rounded-lg transition-colors shrink-0"
+        >
           <Menu size={22} />
         </button>
         <div className="min-w-0">

@@ -79,12 +79,12 @@ export function LoanCard({
             <p className="text-xs text-slate-500 dark:text-zinc-500">Remaining</p>
             <p className="text-base font-bold text-slate-900 dark:text-zinc-100">{formatCurrency(loan.remainingAmount, currency)}</p>
           </div>
-          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             {loan.status === 'ACTIVE' && (
               <button
                 type="button"
                 onClick={onRepay}
-                className="text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors"
+                className="inline-flex items-center justify-center min-h-11 text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 rounded-lg transition-colors"
               >
                 Repay
               </button>
@@ -95,7 +95,7 @@ export function LoanCard({
               disabled={disableDelete}
               aria-label={`Delete loan: ${formatCurrency(loan.principal, currency)} principal`}
               title={disableDelete ? 'Loans with repayments recorded can\'t be deleted' : undefined}
-              className="text-slate-400 dark:text-zinc-600 hover:text-red-600 dark:hover:text-red-400 disabled:hover:text-slate-400 dark:disabled:hover:text-zinc-600 disabled:opacity-40 disabled:cursor-not-allowed p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+              className="w-11 h-11 shrink-0 flex items-center justify-center text-slate-400 dark:text-zinc-600 hover:text-red-600 dark:hover:text-red-400 disabled:hover:text-slate-400 dark:disabled:hover:text-zinc-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg hover:bg-red-500/10 transition-colors"
             >
               <Trash2 size={15} />
             </button>

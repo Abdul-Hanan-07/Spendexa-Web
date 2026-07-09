@@ -79,14 +79,14 @@ export function BudgetCard({
           <button
             type="button"
             onClick={onEdit}
-            className="text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors"
+            className="inline-flex items-center justify-center min-h-11 text-xs font-semibold text-amber-700 dark:text-amber-500 hover:text-amber-800 dark:hover:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-3 rounded-lg transition-colors"
           >
             Update
           </button>
           <button
             type="button"
             onClick={onDeactivate}
-            className="text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 bg-slate-100 dark:bg-zinc-800/60 hover:bg-red-500/10 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+            className="inline-flex items-center justify-center gap-1.5 min-h-11 text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 bg-slate-100 dark:bg-zinc-800/60 hover:bg-red-500/10 px-3 rounded-lg transition-colors"
           >
             <Trash2 size={14} />
             Deactivate
