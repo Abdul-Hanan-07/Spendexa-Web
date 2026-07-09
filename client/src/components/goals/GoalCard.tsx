@@ -18,7 +18,7 @@ export function GoalCard({
 }) {
   const current = Number(goal.currentAmount);
   const target = Number(goal.targetAmount);
-  const progress = (goal.progress * 100).toFixed(1);
+  const progress = goal.progress.toFixed(1);
 
   return (
     <div className="card card-lift p-5">
@@ -58,7 +58,7 @@ export function GoalCard({
           <p className="text-xs text-slate-500 dark:text-zinc-400">
             {formatCurrency(current, currency)} of {formatCurrency(target, currency)}
           </p>
-          <p className={`text-xs font-medium ${goal.progress >= 1 ? 'text-green-700 dark:text-emerald-400' : 'text-slate-500 dark:text-zinc-400'}`}>
+          <p className={`text-xs font-medium ${goal.progress >= 100 ? 'text-green-700 dark:text-emerald-400' : 'text-slate-500 dark:text-zinc-400'}`}>
             {progress}%
           </p>
         </div>
@@ -66,7 +66,7 @@ export function GoalCard({
           <div
             className="h-full transition-all"
             style={{
-              width: `${Math.min(goal.progress * 100, 100)}%`,
+              width: `${Math.min(goal.progress, 100)}%`,
               background: 'linear-gradient(to right, #14B8A6, #22C55E)',
             }}
           />
