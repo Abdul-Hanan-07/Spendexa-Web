@@ -55,7 +55,25 @@ export interface Investment {
   units: string;
   currentValue: string;
   purchaseDate: string;
+  priceUpdatedAt: string | null;
   createdAt: string;
+}
+
+export interface PriceLookupResult {
+  ok: true;
+  price: number;
+  actualDate: string;
+  requestedDate?: string;
+  fallback: boolean;
+}
+
+export interface PriceRefreshResult {
+  id: string;
+  assetName: string;
+  success: boolean;
+  price?: number;
+  currentValue?: string;
+  error?: string;
 }
 
 export type LoanStatus = 'ACTIVE' | 'PAID_OFF';
@@ -333,6 +351,17 @@ export const api = {
   deleteInvestment: (id: string) =>
     request<{ success: boolean; totalAssets: string }>(`/api/investments/${id}`, {
       method: 'DELETE',
+    }),
+  priceLookup: (params: { type: InvestmentType; symbol: string; date: string }) =>
+    request<PriceLookupResult>(`/api/investments/price-lookup${toQueryString(params)}`),
+  refreshInvestmentPrice: (id: string) =>
+    request<{ investment: Investment; totalAssets: string; priceInfo: PriceLookupResult }>(
+      `/api/investments/${id}/refresh-price`,
+      { method: 'POST' },
+    ),
+  refreshAllPrices: () =>
+    request<{ totalAssets: string; results: PriceRefreshResult[] }>('/api/investments/refresh-all', {
+      method: 'POST',
     }),
 
   listLoans: (params: { status?: LoanStatus } = {}) =>

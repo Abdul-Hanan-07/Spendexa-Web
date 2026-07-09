@@ -1,18 +1,24 @@
-import { PenLine, Trash2 } from 'lucide-react';
+import { PenLine, RefreshCw, Trash2 } from 'lucide-react';
 import type { Investment } from '../../lib/api';
-import { formatCurrency, formatDate } from '../../lib/format';
+import { formatCurrency, formatDate, formatRelativeTime } from '../../lib/format';
 import { INVESTMENT_TYPE_BADGE_CLASSES, INVESTMENT_TYPE_LABELS } from './investmentTypes';
+
+const AUTO_PRICEABLE_TYPES = new Set(['PSX', 'CRYPTO']);
 
 export function InvestmentTable({
   investments,
   currency,
+  refreshingIds,
   onUpdateValue,
   onDelete,
+  onRefreshPrice,
 }: {
   investments: Investment[];
   currency: string;
+  refreshingIds: Set<string>;
   onUpdateValue: (investment: Investment) => void;
   onDelete: (investment: Investment) => void;
+  onRefreshPrice: (investment: Investment) => void;
 }) {
   return (
     <>
@@ -50,6 +56,12 @@ export function InvestmentTable({
                 <span>Invested {formatCurrency(inv.amount, currency)}</span>
               </div>
 
+              {AUTO_PRICEABLE_TYPES.has(inv.type) && inv.priceUpdatedAt && (
+                <p className="mt-1 text-xs text-slate-400 dark:text-zinc-600">
+                  Updated {formatRelativeTime(inv.priceUpdatedAt)}
+                </p>
+              )}
+
               <div className="mt-3 flex items-center gap-2">
                 <button
                   type="button"
@@ -59,6 +71,17 @@ export function InvestmentTable({
                   <PenLine size={14} />
                   Update value
                 </button>
+                {AUTO_PRICEABLE_TYPES.has(inv.type) && (
+                  <button
+                    type="button"
+                    onClick={() => onRefreshPrice(inv)}
+                    disabled={refreshingIds.has(inv.id)}
+                    aria-label={`Refresh price: ${inv.assetName}`}
+                    className="w-11 h-11 shrink-0 flex items-center justify-center text-slate-400 dark:text-zinc-600 active:text-amber-700 dark:active:text-amber-500 rounded-lg active:bg-amber-500/10 transition-colors disabled:opacity-60"
+                  >
+                    <RefreshCw size={16} className={refreshingIds.has(inv.id) ? 'animate-spin' : ''} />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => onDelete(inv)}
@@ -121,7 +144,14 @@ export function InvestmentTable({
                   {isGain ? '+' : '-'}
                   {formatCurrency(Math.abs(gainLoss), currency)}
                 </td>
-                <td className="py-3.5 pr-4 text-slate-500 dark:text-zinc-500 whitespace-nowrap">{formatDate(inv.purchaseDate)}</td>
+                <td className="py-3.5 pr-4 text-slate-500 dark:text-zinc-500 whitespace-nowrap">
+                  {formatDate(inv.purchaseDate)}
+                  {AUTO_PRICEABLE_TYPES.has(inv.type) && inv.priceUpdatedAt && (
+                    <p className="text-xs text-slate-400 dark:text-zinc-600 mt-0.5">
+                      Updated {formatRelativeTime(inv.priceUpdatedAt)}
+                    </p>
+                  )}
+                </td>
                 <td className="py-3.5">
                   <div className="flex items-center justify-end gap-1.5">
                     <button
@@ -132,6 +162,17 @@ export function InvestmentTable({
                     >
                       <PenLine size={15} />
                     </button>
+                    {AUTO_PRICEABLE_TYPES.has(inv.type) && (
+                      <button
+                        type="button"
+                        onClick={() => onRefreshPrice(inv)}
+                        disabled={refreshingIds.has(inv.id)}
+                        aria-label={`Refresh price: ${inv.assetName}`}
+                        className="text-slate-500 dark:text-zinc-500 hover:text-amber-800 dark:hover:text-amber-500 p-1.5 rounded-lg hover:bg-amber-500/10 transition-colors disabled:opacity-60"
+                      >
+                        <RefreshCw size={15} className={refreshingIds.has(inv.id) ? 'animate-spin' : ''} />
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => onDelete(inv)}

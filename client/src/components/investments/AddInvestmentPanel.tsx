@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { X } from 'lucide-react';
 import { api } from '../../lib/api';
-import type { Investment, InvestmentType } from '../../lib/api';
+import type { Investment, InvestmentType, PriceLookupResult } from '../../lib/api';
+import { formatDate } from '../../lib/format';
 import { INVESTMENT_TYPES, INVESTMENT_TYPE_LABELS } from './investmentTypes';
+
+const AUTO_PRICEABLE_TYPES: InvestmentType[] = ['PSX', 'CRYPTO'];
 
 const fieldClass =
   'w-full bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-600/50 dark:focus:ring-amber-500/50 focus:border-amber-600/50 dark:focus:border-amber-500/50';
@@ -27,6 +30,47 @@ export function AddInvestmentPanel({
   const [purchaseDate, setPurchaseDate] = useState(todayInputValue());
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [priceLookupStatus, setPriceLookupStatus] = useState<'idle' | 'loading' | 'success' | 'notfound'>('idle');
+  const [priceInfo, setPriceInfo] = useState<PriceLookupResult | null>(null);
+  const [priceNoteDismissed, setPriceNoteDismissed] = useState(false);
+  const lastAutoFilledAmount = useRef<string | null>(null);
+
+  useEffect(() => {
+    setPriceInfo(null);
+    setPriceLookupStatus('idle');
+    setPriceNoteDismissed(false);
+
+    const symbol = assetName.trim();
+    if (!AUTO_PRICEABLE_TYPES.includes(type) || !symbol || !purchaseDate) {
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setPriceLookupStatus('loading');
+      try {
+        const result = await api.priceLookup({ type, symbol, date: purchaseDate });
+        setPriceInfo(result);
+        setPriceLookupStatus('success');
+
+        const unitsNum = Number(units);
+        const computedAmount = (unitsNum > 0 ? result.price * unitsNum : result.price).toFixed(2);
+        setAmount((current) => {
+          if (current !== '' && current !== lastAutoFilledAmount.current) {
+            return current;
+          }
+          lastAutoFilledAmount.current = computedAmount;
+          return computedAmount;
+        });
+      } catch {
+        setPriceInfo(null);
+        setPriceLookupStatus('notfound');
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, assetName, purchaseDate, units]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -119,6 +163,11 @@ export function AddInvestmentPanel({
                 placeholder="e.g. Bitcoin, Gold, OGDC"
                 className={fieldClass}
               />
+              {priceLookupStatus === 'notfound' && (
+                <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1.5">
+                  Couldn't find a price for this symbol — enter values manually.
+                </p>
+              )}
             </div>
 
             <div>
@@ -136,6 +185,28 @@ export function AddInvestmentPanel({
                 placeholder="0.00"
                 className={fieldClass}
               />
+              {priceLookupStatus === 'loading' && (
+                <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1.5">Looking up price…</p>
+              )}
+              {priceLookupStatus === 'success' && priceInfo && !priceNoteDismissed && (
+                <div className="flex items-start justify-between gap-2 mt-1.5">
+                  <p className="text-xs text-amber-700 dark:text-amber-500">
+                    Auto-filled from {formatDate(priceInfo.actualDate)} closing price
+                    {priceInfo.fallback && priceInfo.requestedDate
+                      ? ` (${formatDate(priceInfo.requestedDate)} had no trading data)`
+                      : ''}
+                    .
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPriceNoteDismissed(true)}
+                    aria-label="Dismiss auto-fill note"
+                    className="shrink-0 text-slate-400 dark:text-zinc-600 hover:text-slate-700 dark:hover:text-zinc-300"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3">

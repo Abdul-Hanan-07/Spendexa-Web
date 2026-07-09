@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, TrendingUp } from 'lucide-react';
+import { Plus, RefreshCw, TrendingUp } from 'lucide-react';
 import { AppLayout } from '../components/layout/AppLayout';
 import { EmptyState } from '../components/dashboard/EmptyState';
 import {
@@ -28,6 +28,8 @@ export function InvestmentsPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; variant: 'success' | 'error' } | null>(null);
+  const [refreshingIds, setRefreshingIds] = useState<Set<string>>(new Set());
+  const [refreshingAll, setRefreshingAll] = useState(false);
 
   const { investments, loading, error, refresh } = useInvestments({
     type: filters.type === 'ALL' ? undefined : filters.type,
@@ -69,6 +71,43 @@ export function InvestmentsPage() {
     }
   }
 
+  async function handleRefreshOne(investment: Investment) {
+    setRefreshingIds((prev) => new Set(prev).add(investment.id));
+    try {
+      await api.refreshInvestmentPrice(investment.id);
+      refresh();
+      setToast({ message: `${investment.assetName} price updated`, variant: 'success' });
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : 'Failed to refresh price', variant: 'error' });
+    } finally {
+      setRefreshingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(investment.id);
+        return next;
+      });
+    }
+  }
+
+  async function handleRefreshAll() {
+    setRefreshingAll(true);
+    try {
+      const { results } = await api.refreshAllPrices();
+      refresh();
+      const succeeded = results.filter((r) => r.success).length;
+      if (results.length === 0) {
+        setToast({ message: 'No PSX or crypto holdings to refresh', variant: 'success' });
+      } else if (succeeded === results.length) {
+        setToast({ message: `Updated ${succeeded} of ${results.length} holdings`, variant: 'success' });
+      } else {
+        setToast({ message: `Updated ${succeeded} of ${results.length} holdings — some symbols couldn't be found`, variant: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : 'Failed to refresh prices', variant: 'error' });
+    } finally {
+      setRefreshingAll(false);
+    }
+  }
+
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto space-y-6">
@@ -77,14 +116,25 @@ export function InvestmentsPage() {
             <h1 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">Investments</h1>
             <p className="text-xs text-slate-500 dark:text-zinc-500 mt-0.5">Track your portfolio across asset types.</p>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowAddPanel(true)}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-amber-600 dark:bg-amber-500 hover:bg-amber-700 dark:hover:bg-amber-400 px-4 py-2.5 rounded-lg transition-colors"
-          >
-            <Plus size={16} />
-            Add Investment
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleRefreshAll}
+              disabled={refreshingAll}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 dark:text-zinc-300 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 disabled:opacity-60 px-3.5 py-2.5 rounded-lg transition-colors"
+            >
+              <RefreshCw size={16} className={refreshingAll ? 'animate-spin' : ''} />
+              {refreshingAll ? 'Refreshing…' : 'Refresh prices'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAddPanel(true)}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-amber-600 dark:bg-amber-500 hover:bg-amber-700 dark:hover:bg-amber-400 px-4 py-2.5 rounded-lg transition-colors"
+            >
+              <Plus size={16} />
+              Add Investment
+            </button>
+          </div>
         </div>
 
         <InvestmentFilters
@@ -92,6 +142,10 @@ export function InvestmentsPage() {
           onChange={setFilters}
           onClear={() => setFilters(EMPTY_INVESTMENT_FILTERS)}
         />
+
+        <p className="text-xs text-slate-500 dark:text-zinc-500">
+          Prices may be delayed up to 15 minutes and are for informational tracking only.
+        </p>
 
         <div className="card card-lift p-5">
           {loading ? (
@@ -132,7 +186,9 @@ export function InvestmentsPage() {
             <InvestmentTable
               investments={investments}
               currency={currency}
+              refreshingIds={refreshingIds}
               onUpdateValue={setUpdateTarget}
+              onRefreshPrice={handleRefreshOne}
               onDelete={(inv) => {
                 setDeleteError(null);
                 setDeleteTarget(inv);
