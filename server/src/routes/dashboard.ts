@@ -7,6 +7,15 @@ import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
+function utcDateOnly(d: Date): Date {
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+}
+
+function percentChange(change: Prisma.Decimal, base: Prisma.Decimal): number | null {
+  if (base.isZero()) return null;
+  return change.dividedBy(base.abs()).times(100).toNumber();
+}
+
 router.get('/', requireAuth, async (req, res) => {
   const account = await getDefaultAccount(req.userId!);
 
@@ -35,6 +44,41 @@ router.get('/', requireAuth, async (req, res) => {
   const totalLoanDebt = loanDebtAgg._sum.remainingAmount ?? new Prisma.Decimal(0);
   const netWorth = account.currentBalance.plus(account.totalAssets).minus(totalLoanDebt);
 
+  const today = utcDateOnly(new Date());
+  const yesterday = new Date(today);
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+
+  const snapshotData = {
+    netWorth,
+    currentBalance: account.currentBalance,
+    totalAssets: account.totalAssets,
+    totalLoanDebt,
+  };
+
+  const [, yesterdaySnapshot] = await Promise.all([
+    prisma.netWorthSnapshot.upsert({
+      where: { accountId_date: { accountId: account.id, date: today } },
+      create: { accountId: account.id, date: today, ...snapshotData },
+      update: snapshotData,
+    }),
+    prisma.netWorthSnapshot.findUnique({
+      where: { accountId_date: { accountId: account.id, date: yesterday } },
+    }),
+  ]);
+
+  let netWorthChange: Prisma.Decimal | null = null;
+  let netWorthChangePercent: number | null = null;
+  let investmentChange: Prisma.Decimal | null = null;
+  let investmentChangePercent: number | null = null;
+
+  if (yesterdaySnapshot) {
+    netWorthChange = netWorth.minus(yesterdaySnapshot.netWorth);
+    netWorthChangePercent = percentChange(netWorthChange, yesterdaySnapshot.netWorth);
+
+    investmentChange = account.totalAssets.minus(yesterdaySnapshot.totalAssets);
+    investmentChangePercent = percentChange(investmentChange, yesterdaySnapshot.totalAssets);
+  }
+
   const activeBudgetPayload = activeBudget
     ? {
         id: activeBudget.id,
@@ -53,6 +97,10 @@ router.get('/', requireAuth, async (req, res) => {
     totalAssets: account.totalAssets,
     totalLoanDebt,
     netWorth,
+    netWorthChange,
+    netWorthChangePercent,
+    investmentChange,
+    investmentChangePercent,
     activeBudget: activeBudgetPayload,
     goalCount,
     recentTransactions,

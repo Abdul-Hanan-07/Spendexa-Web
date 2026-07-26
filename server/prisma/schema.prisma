@@ -38,6 +38,7 @@ model Account {
   loans         Loan[]
   budgets       Budget[]
   goals         Goal[]
+  netWorthSnapshots NetWorthSnapshot[]
 
   @@index([userId])
   @@map("accounts")
@@ -153,4 +154,20 @@ model Goal {
 
   @@index([accountId])
   @@map("goals")
+}
+
+model NetWorthSnapshot {
+  id             String   @id @default(uuid())
+  accountId      String
+  account        Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  date           DateTime @db.Date
+  netWorth       Decimal  @db.Decimal(14, 2)
+  currentBalance Decimal  @db.Decimal(14, 2)
+  totalAssets    Decimal  @db.Decimal(14, 2)
+  totalLoanDebt  Decimal  @db.Decimal(14, 2)
+  createdAt      DateTime @default(now())
+
+  @@unique([accountId, date])
+  @@index([accountId])
+  @@map("net_worth_snapshots")
 }
