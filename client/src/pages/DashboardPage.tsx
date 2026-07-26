@@ -65,6 +65,10 @@ export function DashboardPage() {
   const totalLoanDebt = Number(summary.totalLoanDebt);
   const activeLoanCount = loans.filter((l) => l.status === 'ACTIVE').length;
   const hasInvestments = investments.length > 0;
+  const netWorthChange =
+    summary.netWorthChange !== null
+      ? { amount: Number(summary.netWorthChange), percent: summary.netWorthChangePercent }
+      : null;
 
   return (
     <AppLayout>
@@ -92,6 +96,7 @@ export function DashboardPage() {
             formatValue={(n) => formatCurrency(n, currency)}
             icon={TrendingUp}
             tone={netWorth >= 0 ? 'positive' : 'negative'}
+            change={netWorthChange}
           />
           <SummaryCard
             label="Total Loan Debt"

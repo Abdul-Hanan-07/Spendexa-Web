@@ -144,6 +144,10 @@ export interface DashboardSummary {
   totalAssets: string;
   totalLoanDebt: string;
   netWorth: string;
+  netWorthChange: string | null;
+  netWorthChangePercent: number | null;
+  investmentChange: string | null;
+  investmentChangePercent: number | null;
   activeBudget: ActiveBudgetSummary | null;
   goalCount: number;
   recentTransactions: Pick<Transaction, 'id' | 'amount' | 'type' | 'category' | 'date'>[];

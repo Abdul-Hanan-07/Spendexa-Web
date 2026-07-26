@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 
@@ -25,6 +26,7 @@ export function SummaryCard({
   tone = 'default',
   subtext,
   formatValue,
+  change,
 }: {
   label: string;
   value: number;
@@ -32,9 +34,11 @@ export function SummaryCard({
   tone?: Tone;
   subtext?: string;
   formatValue?: (value: number) => string;
+  change?: { amount: number; percent: number | null } | null;
 }) {
   const styles = TONE_STYLES[tone];
   const format = formatValue ?? ((n: number) => String(Math.round(n)));
+  const isGain = (change?.amount ?? 0) >= 0;
 
   return (
     <motion.div
@@ -54,6 +58,20 @@ export function SummaryCard({
           <AnimatedNumber value={value} format={format} />
         </p>
         {subtext && <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">{subtext}</p>}
+        {change && (
+          <div
+            className={`flex items-center gap-1 text-xs font-medium mt-1 ${
+              isGain ? 'text-green-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+            }`}
+          >
+            {isGain ? <ArrowUp size={12} /> : <ArrowDown size={12} />}
+            <span>
+              {isGain ? '+' : '-'}
+              {format(Math.abs(change.amount))}
+              {change.percent !== null ? ` (${Math.abs(change.percent).toFixed(1)}%)` : ''} today
+            </span>
+          </div>
+        )}
       </div>
     </motion.div>
   );
