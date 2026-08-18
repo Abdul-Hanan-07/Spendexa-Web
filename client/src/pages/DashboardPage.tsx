@@ -15,14 +15,19 @@ import { formatCurrency } from '../lib/format';
 
 export function DashboardPage() {
   const { user } = useAuth();
-  const { data, loading, error } = useDashboardData();
+  const { data, loading, slow, error } = useDashboardData();
   const currency = user?.currency ?? 'PKR';
 
   if (loading) {
     return (
       <AppLayout>
-        <div className="flex items-center justify-center h-64 text-slate-500 dark:text-zinc-500 text-sm">
-          Loading your dashboard...
+        <div className="flex flex-col items-center justify-center h-64 gap-2 text-center">
+          <p className="text-slate-500 dark:text-zinc-500 text-sm">Loading your dashboard...</p>
+          {slow && (
+            <p className="text-slate-400 dark:text-zinc-600 text-xs">
+              This is taking longer than usual — hang tight.
+            </p>
+          )}
         </div>
       </AppLayout>
     );

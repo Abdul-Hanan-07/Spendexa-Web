@@ -16,13 +16,32 @@ function percentChange(change: Prisma.Decimal, base: Prisma.Decimal): number | n
   return change.dividedBy(base.abs()).times(100).toNumber();
 }
 
-router.get('/', requireAuth, async (req, res) => {
-  const account = await getDefaultAccount(req.userId!);
+const DASHBOARD_QUERY_TIMEOUT_MS = 4000;
 
-  if (!account) {
-    return res.status(404).json({ error: 'No account found' });
+class DashboardTimeoutError extends Error {
+  constructor() {
+    super('Dashboard query timed out');
+    this.name = 'DashboardTimeoutError';
   }
+}
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new DashboardTimeoutError()), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
+
+async function fetchDashboardData(account: { id: string; currentBalance: Prisma.Decimal; totalAssets: Prisma.Decimal }) {
   const [loanDebtAgg, activeBudget, goalCount, recentTransactions] = await Promise.all([
     prisma.loan.aggregate({
       where: { accountId: account.id, status: 'ACTIVE' },
@@ -90,11 +109,7 @@ router.get('/', requireAuth, async (req, res) => {
       }
     : null;
 
-  return res.json({
-    accountId: account.id,
-    accountName: account.name,
-    currentBalance: account.currentBalance,
-    totalAssets: account.totalAssets,
+  return {
     totalLoanDebt,
     netWorth,
     netWorthChange,
@@ -104,6 +119,42 @@ router.get('/', requireAuth, async (req, res) => {
     activeBudget: activeBudgetPayload,
     goalCount,
     recentTransactions,
+  };
+}
+
+router.get('/', requireAuth, async (req, res) => {
+  const account = await getDefaultAccount(req.userId!);
+
+  if (!account) {
+    return res.status(404).json({ error: 'No account found' });
+  }
+
+  let data;
+  try {
+    data = await withTimeout(fetchDashboardData(account), DASHBOARD_QUERY_TIMEOUT_MS);
+  } catch (err) {
+    if (!(err instanceof DashboardTimeoutError)) {
+      throw err;
+    }
+    console.warn(`Dashboard query exceeded ${DASHBOARD_QUERY_TIMEOUT_MS}ms, retrying once for account ${account.id}`);
+    try {
+      data = await withTimeout(fetchDashboardData(account), DASHBOARD_QUERY_TIMEOUT_MS);
+    } catch (retryErr) {
+      if (retryErr instanceof DashboardTimeoutError) {
+        return res.status(503).json({
+          error: 'Dashboard is taking longer than usual to load. Please try again in a moment.',
+        });
+      }
+      throw retryErr;
+    }
+  }
+
+  return res.json({
+    accountId: account.id,
+    accountName: account.name,
+    currentBalance: account.currentBalance,
+    totalAssets: account.totalAssets,
+    ...data,
   });
 });
 

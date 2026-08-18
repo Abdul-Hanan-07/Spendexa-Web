@@ -11,9 +11,12 @@ interface DashboardData {
   goals: Goal[];
 }
 
+const SLOW_LOADING_THRESHOLD_MS = 3500;
+
 export function useDashboardData(enabled: boolean = true) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(enabled);
+  const [slow, setSlow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -22,7 +25,12 @@ export function useDashboardData(enabled: boolean = true) {
 
     let cancelled = false;
     setLoading(true);
+    setSlow(false);
     setError(null);
+
+    const slowTimer = setTimeout(() => {
+      if (!cancelled) setSlow(true);
+    }, SLOW_LOADING_THRESHOLD_MS);
 
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -51,14 +59,17 @@ export function useDashboardData(enabled: boolean = true) {
         setError(err instanceof Error ? err.message : 'Failed to load dashboard');
       })
       .finally(() => {
+        clearTimeout(slowTimer);
         if (cancelled) return;
+        setSlow(false);
         setLoading(false);
       });
 
     return () => {
       cancelled = true;
+      clearTimeout(slowTimer);
     };
   }, [reloadKey, enabled]);
 
-  return { data, loading, error, refresh: () => setReloadKey((k) => k + 1) };
+  return { data, loading, slow, error, refresh: () => setReloadKey((k) => k + 1) };
 }
