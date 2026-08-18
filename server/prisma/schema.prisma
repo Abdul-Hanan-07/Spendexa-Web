@@ -59,8 +59,16 @@ model Transaction {
   date      DateTime
   createdAt DateTime @default(now())
 
+  budgetId  String?
+  budget    Budget?  @relation(fields: [budgetId], references: [id], onDelete: SetNull)
+
+  loanId    String?
+  loan      Loan?    @relation(fields: [loanId], references: [id], onDelete: Cascade)
+
   @@index([accountId])
   @@index([accountId, date])
+  @@index([budgetId])
+  @@index([loanId])
   @@map("transactions")
 }
 
@@ -106,6 +114,7 @@ model Loan {
   createdAt        DateTime   @default(now())
 
   repayments       LoanRepayment[]
+  transactions     Transaction[]
 
   @@index([accountId])
   @@map("loans")
@@ -136,6 +145,8 @@ model Budget {
   active           Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  transactions     Transaction[]
 
   @@index([accountId])
   @@map("budgets")
