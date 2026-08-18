@@ -8,10 +8,16 @@ const waitQueue: Array<() => void> = [];
 
 async function getBrowser(): Promise<Browser> {
   if (!browserPromise) {
-    browserPromise = puppeteer.launch({ headless: true }).catch((err) => {
-      browserPromise = null;
-      throw err;
-    });
+    // --no-sandbox/--disable-setuid-sandbox: Chromium's sandbox needs kernel
+    // privileges a default Docker container doesn't grant. Safe to disable
+    // here because we only ever render our own report template with data we
+    // generated -- never untrusted/attacker-controlled HTML.
+    browserPromise = puppeteer
+      .launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] })
+      .catch((err) => {
+        browserPromise = null;
+        throw err;
+      });
   }
 
   const browser = await browserPromise;
