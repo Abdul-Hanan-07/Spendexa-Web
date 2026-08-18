@@ -32,6 +32,15 @@ export interface UpdateProfileInput {
   email: string;
 }
 
+export interface ForgotPasswordInput {
+  email: string;
+}
+
+export interface ResetPasswordInput {
+  token: string;
+  newPassword: string;
+}
+
 export type TransactionType = 'INCOME' | 'EXPENSE';
 
 export interface Transaction {
@@ -327,6 +336,16 @@ export const api = {
     method: 'PUT',
     body: JSON.stringify(input),
   }),
+  forgotPassword: (input: ForgotPasswordInput) =>
+    request<{ message: string }>('/api/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
+  resetPassword: (input: ResetPasswordInput) =>
+    request<{ success: boolean }>('/api/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }),
 
   getDashboard: () => request<DashboardSummary>('/api/dashboard'),
 
