@@ -23,8 +23,19 @@ router.post('/', requireAuth, async (req, res) => {
 
   try {
     const result = await prisma.$transaction(async (tx) => {
+      let chargedBudgetId: string | null = null;
+      if (type === 'EXPENSE') {
+        const activeBudget = await tx.budget.findFirst({
+          where: { accountId: account.id, active: true },
+        });
+
+        if (activeBudget && isBudgetWithinPeriod(activeBudget, date)) {
+          chargedBudgetId = activeBudget.id;
+        }
+      }
+
       const transaction = await tx.transaction.create({
-        data: { accountId: account.id, amount, type, category, date },
+        data: { accountId: account.id, amount, type, category, date, budgetId: chargedBudgetId },
       });
 
       const updatedAccount = await tx.account.update({
@@ -37,20 +48,14 @@ router.post('/', requireAuth, async (req, res) => {
       });
 
       let budget = null;
-      if (type === 'EXPENSE') {
-        const activeBudget = await tx.budget.findFirst({
-          where: { accountId: account.id, active: true },
+      if (chargedBudgetId) {
+        budget = await tx.budget.update({
+          where: { id: chargedBudgetId },
+          data: {
+            remainingAmount: { decrement: amount },
+            spentAmount: { increment: amount },
+          },
         });
-
-        if (activeBudget && isBudgetWithinPeriod(activeBudget, date)) {
-          budget = await tx.budget.update({
-            where: { id: activeBudget.id },
-            data: {
-              remainingAmount: { decrement: amount },
-              spentAmount: { increment: amount },
-            },
-          });
-        }
       }
 
       return {
@@ -80,12 +85,10 @@ router.get('/', requireAuth, async (req, res) => {
     return res.status(404).json({ error: 'No account found' });
   }
 
-  const categoryFilter: Prisma.StringFilter | undefined =
-    category || search
-      ? {
-          ...(category ? { equals: category } : {}),
-          ...(search ? { contains: search, mode: 'insensitive' } : {}),
-        }
+  const categoryFilter: Prisma.StringFilter | undefined = category
+    ? { equals: category }
+    : search
+      ? { contains: search, mode: 'insensitive' }
       : undefined;
 
   const where: Prisma.TransactionWhereInput = {
@@ -149,20 +152,14 @@ router.delete('/:id', requireAuth, async (req, res) => {
       });
 
       let budget = null;
-      if (transaction.type === 'EXPENSE') {
-        const activeBudget = await tx.budget.findFirst({
-          where: { accountId: transaction.accountId, active: true },
+      if (transaction.type === 'EXPENSE' && transaction.budgetId) {
+        budget = await tx.budget.update({
+          where: { id: transaction.budgetId },
+          data: {
+            remainingAmount: { increment: transaction.amount },
+            spentAmount: { decrement: transaction.amount },
+          },
         });
-
-        if (activeBudget && isBudgetWithinPeriod(activeBudget, transaction.date)) {
-          budget = await tx.budget.update({
-            where: { id: activeBudget.id },
-            data: {
-              remainingAmount: { increment: transaction.amount },
-              spentAmount: { decrement: transaction.amount },
-            },
-          });
-        }
       }
 
       return {

@@ -27,18 +27,10 @@ router.post('/', requireAuth, async (req, res) => {
       });
 
       if (existing) {
-        const budget = await tx.budget.update({
+        await tx.budget.update({
           where: { id: existing.id },
-          data: {
-            name,
-            startAmount,
-            remainingAmount: startAmount,
-            spentAmount: 0,
-            startDate,
-            endDate,
-          },
+          data: { active: false },
         });
-        return { budget, action: 'updated' as const };
       }
 
       const budget = await tx.budget.create({
@@ -52,7 +44,7 @@ router.post('/', requireAuth, async (req, res) => {
           endDate,
         },
       });
-      return { budget, action: 'created' as const };
+      return { budget, action: (existing ? 'updated' : 'created') as 'updated' | 'created' };
     });
 
     return res.status(result.action === 'created' ? 201 : 200).json({
@@ -85,7 +77,7 @@ router.get('/history', requireAuth, async (req, res) => {
   }
 
   const budgets = await prisma.budget.findMany({
-    where: { accountId: account.id },
+    where: { accountId: account.id, active: false },
     orderBy: { createdAt: 'desc' },
   });
 
