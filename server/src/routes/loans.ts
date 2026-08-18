@@ -25,11 +25,31 @@ router.post('/', requireAuth, async (req, res) => {
   );
 
   try {
-    const loan = await prisma.loan.create({
-      data: { accountId: account.id, principal, interestRate, remainingAmount, startDate, endDate },
+    const result = await prisma.$transaction(async (tx) => {
+      const loan = await tx.loan.create({
+        data: { accountId: account.id, principal, interestRate, remainingAmount, startDate, endDate },
+      });
+
+      await tx.transaction.create({
+        data: {
+          accountId: account.id,
+          amount: principal,
+          type: 'INCOME',
+          category: 'Loan',
+          date: startDate,
+          loanId: loan.id,
+        },
+      });
+
+      const updatedAccount = await tx.account.update({
+        where: { id: account.id },
+        data: { currentBalance: { increment: principal } },
+      });
+
+      return { loan, currentBalance: updatedAccount.currentBalance };
     });
 
-    return res.status(201).json({ loan });
+    return res.status(201).json({ loan: result.loan, currentBalance: result.currentBalance });
   } catch (err) {
     console.error('Create loan error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
@@ -106,7 +126,28 @@ router.post('/:id/repay', requireAuth, async (req, res) => {
         data: { remainingAmount: newRemaining, status: newStatus },
       });
 
-      return { outcome: 'ok' as const, repayment, loan: updatedLoan };
+      await tx.transaction.create({
+        data: {
+          accountId: loan.accountId,
+          amount,
+          type: 'EXPENSE',
+          category: 'Loan repayment',
+          date: repayment.date,
+          loanId: loan.id,
+        },
+      });
+
+      const updatedAccount = await tx.account.update({
+        where: { id: loan.accountId },
+        data: { currentBalance: { decrement: amount } },
+      });
+
+      return {
+        outcome: 'ok' as const,
+        repayment,
+        loan: updatedLoan,
+        currentBalance: updatedAccount.currentBalance,
+      };
     });
 
     if (result.outcome === 'not_found') {
@@ -116,7 +157,9 @@ router.post('/:id/repay', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Loan is already paid off' });
     }
 
-    return res.status(201).json({ loan: result.loan, repayment: result.repayment });
+    return res
+      .status(201)
+      .json({ loan: result.loan, repayment: result.repayment, currentBalance: result.currentBalance });
   } catch (err) {
     console.error('Repay loan error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
@@ -141,9 +184,14 @@ router.delete('/:id', requireAuth, async (req, res) => {
         return { outcome: 'has_repayments' as const };
       }
 
+      const updatedAccount = await tx.account.update({
+        where: { id: loan.accountId },
+        data: { currentBalance: { decrement: loan.principal } },
+      });
+
       await tx.loan.delete({ where: { id } });
 
-      return { outcome: 'ok' as const };
+      return { outcome: 'ok' as const, currentBalance: updatedAccount.currentBalance };
     });
 
     if (result.outcome === 'not_found') {
@@ -155,7 +203,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
         .json({ error: 'Cannot delete a loan that has repayments recorded' });
     }
 
-    return res.json({ success: true });
+    return res.json({ success: true, currentBalance: result.currentBalance });
   } catch (err) {
     console.error('Delete loan error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
