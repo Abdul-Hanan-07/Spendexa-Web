@@ -5,7 +5,7 @@ import { Modal } from '../common/Modal';
 
 export function ProfileModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { user } = useAuth();
-  const { data } = useDashboardData();
+  const { data } = useDashboardData(isOpen);
 
   if (!user) return null;
 

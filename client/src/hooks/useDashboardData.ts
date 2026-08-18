@@ -11,13 +11,15 @@ interface DashboardData {
   goals: Goal[];
 }
 
-export function useDashboardData() {
+export function useDashboardData(enabled: boolean = true) {
   const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
+
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -56,7 +58,7 @@ export function useDashboardData() {
     return () => {
       cancelled = true;
     };
-  }, [reloadKey]);
+  }, [reloadKey, enabled]);
 
   return { data, loading, error, refresh: () => setReloadKey((k) => k + 1) };
 }
