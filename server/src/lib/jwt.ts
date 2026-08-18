@@ -10,10 +10,22 @@ if (!JWT_SECRET) {
 const JWT_EXPIRES_IN = '7d';
 export const AUTH_COOKIE_NAME = 'token';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Frontend (Vercel) and backend (SnapDeploy) live on different domains in
+// production, which makes every API call a cross-site request from the
+// browser's perspective. sameSite: 'lax' only rides along on top-level
+// navigations cross-site -- it's silently dropped from fetch/XHR requests,
+// which is exactly how the API is actually called, so the cookie never
+// makes it back on the next request. sameSite: 'none' is required for that,
+// and browsers reject 'none' without secure: true, so the two must move
+// together. Locally (http, same-origin-ish via CORS) 'lax' + non-secure is
+// what actually works, since 'none' cookies are rejected outright over
+// plain http.
 export const AUTH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: '/',
 };

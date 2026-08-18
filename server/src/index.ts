@@ -16,7 +16,15 @@ import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 const port = process.env.PORT || 4000;
-const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+
+// The browser's Origin header never has a trailing slash, but it's an easy
+// value to fat-finger with one when setting CLIENT_ORIGIN in a deploy
+// dashboard -- a mismatched trailing slash makes the `cors` package's exact
+// string comparison fail silently (no CORS header back, credentialed
+// request blocked client-side), which looks identical to a cookie problem.
+// Strip it here so that footgun can't happen regardless of how the env var
+// was entered.
+const clientOrigin = (process.env.CLIENT_ORIGIN || 'http://localhost:5173').replace(/\/+$/, '');
 
 app.use(
   helmet({
