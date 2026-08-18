@@ -3,6 +3,7 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { getDefaultAccount } from '../lib/account';
 import { buildBudgetPayload, isBudgetWithinPeriod } from '../lib/budget';
+import { isNumericOverflowError } from '../lib/dbErrors';
 import { requireAuth } from '../middleware/auth';
 import { createTransactionSchema, listTransactionsQuerySchema } from '../schemas/transaction';
 
@@ -67,6 +68,9 @@ router.post('/', requireAuth, async (req, res) => {
 
     return res.status(201).json(result);
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That amount would push the account balance beyond what can be stored.' });
+    }
     console.error('Create transaction error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -175,6 +179,9 @@ router.delete('/:id', requireAuth, async (req, res) => {
 
     return res.json({ success: true, currentBalance: result.currentBalance, budget: result.budget });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That amount would push the account balance beyond what can be stored.' });
+    }
     console.error('Delete transaction error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }

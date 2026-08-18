@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { getDefaultAccount } from '../lib/account';
+import { isNumericOverflowError } from '../lib/dbErrors';
 import { requireAuth } from '../middleware/auth';
 import { createLoanSchema, listLoansQuerySchema, repayLoanSchema } from '../schemas/loan';
 
@@ -51,6 +52,9 @@ router.post('/', requireAuth, async (req, res) => {
 
     return res.status(201).json({ loan: result.loan, currentBalance: result.currentBalance });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That principal would push the account balance beyond what can be stored.' });
+    }
     console.error('Create loan error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -161,6 +165,9 @@ router.post('/:id/repay', requireAuth, async (req, res) => {
       .status(201)
       .json({ loan: result.loan, repayment: result.repayment, currentBalance: result.currentBalance });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That amount would push the account balance beyond what can be stored.' });
+    }
     console.error('Repay loan error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -205,6 +212,9 @@ router.delete('/:id', requireAuth, async (req, res) => {
 
     return res.json({ success: true, currentBalance: result.currentBalance });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'Reversing that loan would push the account balance beyond what can be stored.' });
+    }
     console.error('Delete loan error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }

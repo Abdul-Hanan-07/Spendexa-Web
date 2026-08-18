@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { MAX_MONEY_AMOUNT, MONEY_TOO_LARGE_MESSAGE } from './money';
 
 export const transactionTypeSchema = z.enum(['INCOME', 'EXPENSE']);
 
 export const createTransactionSchema = z.object({
-  amount: z.coerce.number().positive('Amount must be greater than 0'),
+  amount: z.coerce.number().positive('Amount must be greater than 0').max(MAX_MONEY_AMOUNT, MONEY_TOO_LARGE_MESSAGE),
   type: transactionTypeSchema,
   category: z.string().trim().min(1, 'Category is required'),
   date: z.coerce.date('Invalid date'),

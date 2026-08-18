@@ -1,13 +1,14 @@
 import { z } from 'zod';
+import { MAX_MONEY_AMOUNT, MONEY_TOO_LARGE_MESSAGE } from './money';
 
 export const investmentTypeSchema = z.enum(['PSX', 'CRYPTO', 'REAL_ESTATE', 'METAL']);
 
 export const createInvestmentSchema = z.object({
   type: investmentTypeSchema,
   assetName: z.string().trim().min(1, 'Asset name is required'),
-  amount: z.coerce.number().positive('Amount must be greater than 0'),
+  amount: z.coerce.number().positive('Amount must be greater than 0').max(MAX_MONEY_AMOUNT, MONEY_TOO_LARGE_MESSAGE),
   units: z.coerce.number().min(0).default(0),
-  currentValue: z.coerce.number().min(0).default(0),
+  currentValue: z.coerce.number().min(0).max(MAX_MONEY_AMOUNT, MONEY_TOO_LARGE_MESSAGE).default(0),
   purchaseDate: z.coerce.date('Invalid purchaseDate'),
 });
 
@@ -16,7 +17,7 @@ export const listInvestmentsQuerySchema = z.object({
 });
 
 export const updateInvestmentSchema = z.object({
-  currentValue: z.coerce.number().min(0, 'currentValue must be 0 or greater'),
+  currentValue: z.coerce.number().min(0, 'currentValue must be 0 or greater').max(MAX_MONEY_AMOUNT, MONEY_TOO_LARGE_MESSAGE),
 });
 
 export const priceLookupQuerySchema = z.object({

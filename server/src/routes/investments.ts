@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Prisma, InvestmentType } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { getDefaultAccount } from '../lib/account';
+import { isNumericOverflowError } from '../lib/dbErrors';
 import { requireAuth } from '../middleware/auth';
 import { getCurrentPrice, getHistoricalPrice } from '../lib/priceService';
 import {
@@ -55,6 +56,9 @@ router.post('/', requireAuth, async (req, res) => {
 
     return res.status(201).json(result);
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That value would push total assets beyond what can be stored.' });
+    }
     console.error('Create investment error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -166,6 +170,9 @@ router.post('/refresh-all', requireAuth, async (req, res) => {
 
     return res.json({ totalAssets, results });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'Refreshed prices would push total assets beyond what can be stored.' });
+    }
     console.error('Refresh all prices error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -218,6 +225,9 @@ router.post('/:id/refresh-price', requireAuth, async (req, res) => {
 
     return res.json({ ...result, priceInfo: priceResult });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That refreshed price would push total assets beyond what can be stored.' });
+    }
     console.error('Refresh price error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -277,6 +287,9 @@ router.patch('/:id', requireAuth, async (req, res) => {
 
     return res.json(result);
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'That value would push total assets beyond what can be stored.' });
+    }
     console.error('Update investment error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
@@ -312,6 +325,9 @@ router.delete('/:id', requireAuth, async (req, res) => {
 
     return res.json({ success: true, totalAssets: result.totalAssets });
   } catch (err) {
+    if (isNumericOverflowError(err)) {
+      return res.status(400).json({ error: 'Removing that investment would push total assets beyond what can be stored.' });
+    }
     console.error('Delete investment error:', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
