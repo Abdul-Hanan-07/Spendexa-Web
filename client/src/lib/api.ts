@@ -42,6 +42,8 @@ export interface Transaction {
   category: string;
   date: string;
   createdAt: string;
+  budgetId: string | null;
+  loanId: string | null;
 }
 
 export type InvestmentType = 'PSX' | 'CRYPTO' | 'REAL_ESTATE' | 'METAL';
