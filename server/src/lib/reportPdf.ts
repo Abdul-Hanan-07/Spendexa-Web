@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import puppeteer from 'puppeteer';
 import type { Prisma } from '@prisma/client';
 import type { ReportData } from './report';
 import { formatPeriodLabel } from './report';
+import { withBrowserPage } from './browserPool';
 
 let cachedLogoDataUri: string | null | undefined;
 
@@ -345,9 +345,7 @@ export function renderReportHtml(data: ReportData): string {
 
 export async function renderPdf(data: ReportData): Promise<Buffer> {
   const html = renderReportHtml(data);
-  const browser = await puppeteer.launch({ headless: true });
-  try {
-    const page = await browser.newPage();
+  return withBrowserPage(async (page) => {
     await page.setContent(html, { waitUntil: 'load' });
     const pdf = await page.pdf({
       format: 'A4',
@@ -362,7 +360,5 @@ export async function renderPdf(data: ReportData): Promise<Buffer> {
       margin: { top: '16mm', bottom: '18mm', left: '12mm', right: '12mm' },
     });
     return Buffer.from(pdf);
-  } finally {
-    await browser.close();
-  }
+  });
 }
