@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import { api, type LoginInput, type RegisterInput, type User } from '../lib/api';
+import { prefetchDashboard } from '../lib/dashboardPrefetch';
 
 interface AuthContextValue {
   user: User | null;
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { user } = await api.login(input);
       setUser(user);
+      prefetchDashboard();
       toast.success('Successfully logged in!');
     } catch (error) {
       toast.error('Login failed');
@@ -41,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { user } = await api.register(input);
       setUser(user);
+      prefetchDashboard();
       toast.success('Account created successfully!');
     } catch (error) {
       toast.error('Registration failed');

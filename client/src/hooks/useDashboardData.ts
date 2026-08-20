@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import type { DashboardSummary, Goal, Investment, Loan, Transaction } from '../lib/api';
+import { consumePrefetchedDashboard } from '../lib/dashboardPrefetch';
 
 interface DashboardData {
   summary: DashboardSummary;
   transactions: Transaction[];
-  recentTransactions: Transaction[];
+  recentTransactions: Pick<Transaction, 'id' | 'amount' | 'type' | 'category' | 'date'>[];
   investments: Investment[];
   loans: Loan[];
   goals: Goal[];
@@ -32,26 +33,22 @@ export function useDashboardData(enabled: boolean = true) {
       if (!cancelled) setSlow(true);
     }, SLOW_LOADING_THRESHOLD_MS);
 
-    const ninetyDaysAgo = new Date();
-    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-
-    Promise.all([
-      api.getDashboard(),
-      api.listTransactions({ startDate: ninetyDaysAgo.toISOString(), limit: 100 }),
-      api.listTransactions({ limit: 10 }),
-      api.listInvestments(),
-      api.listLoans(),
-      api.listGoals(),
-    ])
-      .then(([summary, txWindow, recentTx, investmentsRes, loansRes, goalsRes]) => {
+    // A single call: /api/dashboard already bundles the 90-day transaction
+    // window, recent transactions, investments, loans, and goals server-side
+    // (one Promise.all, same DB load) instead of the frontend making 6
+    // separate round trips for data that's all needed on first paint anyway.
+    // If login/register already kicked this off (see dashboardPrefetch.ts),
+    // reuse that in-flight request instead of firing a second one.
+    (consumePrefetchedDashboard() ?? api.getDashboard())
+      .then((summary) => {
         if (cancelled) return;
         setData({
           summary,
-          transactions: txWindow.transactions,
-          recentTransactions: recentTx.transactions,
-          investments: investmentsRes.investments,
-          loans: loansRes.loans,
-          goals: goalsRes.goals,
+          transactions: summary.transactions,
+          recentTransactions: summary.recentTransactions,
+          investments: summary.investments,
+          loans: summary.loans,
+          goals: summary.goals,
         });
       })
       .catch((err: unknown) => {
