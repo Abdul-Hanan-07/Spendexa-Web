@@ -9,6 +9,7 @@ import { InvestmentAllocationChart } from '../components/dashboard/InvestmentAll
 import { BudgetWidget } from '../components/dashboard/BudgetWidget';
 import { GoalsWidget } from '../components/dashboard/GoalsWidget';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';
+import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton';
 import { useAuth } from '../context/AuthContext';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { formatCurrency } from '../lib/format';
@@ -21,14 +22,12 @@ export function DashboardPage() {
   if (loading) {
     return (
       <AppLayout>
-        <div className="flex flex-col items-center justify-center h-64 gap-2 text-center">
-          <p className="text-slate-500 dark:text-zinc-500 text-sm">Loading your dashboard...</p>
-          {slow && (
-            <p className="text-slate-400 dark:text-zinc-600 text-xs">
-              This is taking longer than usual — hang tight.
-            </p>
-          )}
-        </div>
+        <DashboardSkeleton />
+        {slow && (
+          <p className="mt-4 text-center text-slate-400 dark:text-zinc-600 text-xs">
+            This is taking longer than usual — hang tight.
+          </p>
+        )}
       </AppLayout>
     );
   }
