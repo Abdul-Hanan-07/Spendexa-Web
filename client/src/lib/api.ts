@@ -162,6 +162,10 @@ export interface DashboardSummary {
   activeBudget: ActiveBudgetSummary | null;
   goalCount: number;
   recentTransactions: Pick<Transaction, 'id' | 'amount' | 'type' | 'category' | 'date'>[];
+  transactions: Transaction[];
+  investments: Investment[];
+  loans: Loan[];
+  goals: Goal[];
 }
 
 export interface ListTransactionsParams {

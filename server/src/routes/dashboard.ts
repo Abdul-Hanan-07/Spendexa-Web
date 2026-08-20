@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { getDefaultAccount } from '../lib/account';
 import { isBudgetNearLimit } from '../lib/budget';
+import { buildGoalPayload } from '../lib/goal';
 import { requireAuth } from '../middleware/auth';
 
 const router = Router();
@@ -42,23 +43,50 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 }
 
 async function fetchDashboardData(account: { id: string; currentBalance: Prisma.Decimal; totalAssets: Prisma.Decimal }) {
-  const [loanDebtAgg, activeBudget, goalCount, recentTransactions] = await Promise.all([
-    prisma.loan.aggregate({
-      where: { accountId: account.id, status: 'ACTIVE' },
-      _sum: { remainingAmount: true },
-    }),
-    prisma.budget.findFirst({
-      where: { accountId: account.id, active: true },
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.goal.count({ where: { accountId: account.id } }),
-    prisma.transaction.findMany({
-      where: { accountId: account.id },
-      orderBy: { date: 'desc' },
-      take: 5,
-      select: { id: true, amount: true, type: true, category: true, date: true },
-    }),
-  ]);
+  const ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+
+  const [loanDebtAgg, activeBudget, goalCount, recentTransactions, transactions, investments, loans, goals] =
+    await Promise.all([
+      prisma.loan.aggregate({
+        where: { accountId: account.id, status: 'ACTIVE' },
+        _sum: { remainingAmount: true },
+      }),
+      prisma.budget.findFirst({
+        where: { accountId: account.id, active: true },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.goal.count({ where: { accountId: account.id } }),
+      // Matches RecentTransactions' `.slice(0, 8)` -- bundled here instead of
+      // the frontend making a second, separate /api/transactions?limit=10 call
+      // for what's ultimately the same "recent activity" data.
+      prisma.transaction.findMany({
+        where: { accountId: account.id },
+        orderBy: { date: 'desc' },
+        take: 8,
+        select: { id: true, amount: true, type: true, category: true, date: true },
+      }),
+      // 90-day window feeding NetWorthChart/ExpenseBreakdownChart/IncomeExpenseChart.
+      // Bundled here rather than a separate /api/transactions round trip -- same
+      // query Prisma would run either way, just returned over one HTTP request.
+      prisma.transaction.findMany({
+        where: { accountId: account.id, date: { gte: ninetyDaysAgo } },
+        orderBy: { date: 'desc' },
+        take: 100,
+      }),
+      prisma.investment.findMany({
+        where: { accountId: account.id },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.loan.findMany({
+        where: { accountId: account.id },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.goal.findMany({
+        where: { accountId: account.id },
+        orderBy: { deadline: 'asc' },
+      }),
+    ]);
 
   const totalLoanDebt = loanDebtAgg._sum.remainingAmount ?? new Prisma.Decimal(0);
   const netWorth = account.currentBalance.plus(account.totalAssets).minus(totalLoanDebt);
@@ -119,6 +147,10 @@ async function fetchDashboardData(account: { id: string; currentBalance: Prisma.
     activeBudget: activeBudgetPayload,
     goalCount,
     recentTransactions,
+    transactions,
+    investments,
+    loans,
+    goals: goals.map(buildGoalPayload),
   };
 }
 

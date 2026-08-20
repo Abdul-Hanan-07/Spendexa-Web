@@ -9,7 +9,7 @@ export function RecentTransactions({
   transactions,
   currency,
 }: {
-  transactions: Transaction[];
+  transactions: Pick<Transaction, 'id' | 'amount' | 'type' | 'category' | 'date'>[];
   currency: string;
 }) {
   return (
