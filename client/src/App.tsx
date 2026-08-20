@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { SlowServerBanner } from './components/common/SlowServerBanner';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -53,8 +54,9 @@ function App() {
     <ThemeProvider>
       <BrowserRouter>
         <AuthProvider>
+          <SlowServerBanner />
           <AppRoutes />
-          <Toaster 
+          <Toaster
             position="bottom-right"
             toastOptions={{
               className: 'dark:bg-zinc-800 dark:text-zinc-100',

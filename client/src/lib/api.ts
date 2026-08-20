@@ -1,3 +1,5 @@
+import { trackRequest } from './slowRequestTracker';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 export interface User {
@@ -279,19 +281,23 @@ export interface ReportPreview {
 class ApiError extends Error {}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
+  return trackRequest(
+    (async () => {
+      const res = await fetch(`${API_URL}${path}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options,
+      });
 
-  const data = await res.json().catch(() => null);
+      const data = await res.json().catch(() => null);
 
-  if (!res.ok) {
-    throw new ApiError((data && data.error) || 'Something went wrong');
-  }
+      if (!res.ok) {
+        throw new ApiError((data && data.error) || 'Something went wrong');
+      }
 
-  return data as T;
+      return data as T;
+    })(),
+  );
 }
 
 function toQueryString(params: object): string {
@@ -306,17 +312,21 @@ function toQueryString(params: object): string {
 }
 
 async function fetchBlob(path: string): Promise<{ blob: Blob; filename: string }> {
-  const res = await fetch(`${API_URL}${path}`, { credentials: 'include' });
+  return trackRequest(
+    (async () => {
+      const res = await fetch(`${API_URL}${path}`, { credentials: 'include' });
 
-  if (!res.ok) {
-    const data = await res.json().catch(() => null);
-    throw new ApiError((data && data.error) || 'Something went wrong');
-  }
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new ApiError((data && data.error) || 'Something went wrong');
+      }
 
-  const disposition = res.headers.get('Content-Disposition') || '';
-  const filename = /filename="(.+?)"/.exec(disposition)?.[1] || 'spendexa-report';
-  const blob = await res.blob();
-  return { blob, filename };
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const filename = /filename="(.+?)"/.exec(disposition)?.[1] || 'spendexa-report';
+      const blob = await res.blob();
+      return { blob, filename };
+    })(),
+  );
 }
 
 export const api = {
